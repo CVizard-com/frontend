@@ -1,4 +1,4 @@
-FROM node:16-alpine
+FROM node:16
 
 EXPOSE 5173:5173
 
@@ -8,7 +8,7 @@ COPY cvizard/package.json /app/package.json
 COPY cvizard/package-lock.json /app/package-lock.json
 
 
-# RUN npm install
+RUN apk add --no-cache bash
 
 COPY . . 
 
