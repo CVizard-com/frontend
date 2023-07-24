@@ -10,7 +10,9 @@ COPY cvizard/package-lock.json /app/package-lock.json
 
 # RUN apk add --no-cache bash
 
-COPY . . 
-RUN cd cvizard && npm i && npm i -g vite
+
+RUN npm i && npm i -g vite
+
+COPY ./cvizard /app
 # CMD ["cd","cvizard","&&","npm","i","&&","npm", "run", "dev"]
 CMD ["npm", "run", "dev"]
