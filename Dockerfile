@@ -1,4 +1,4 @@
-FROM node:16
+FROM node:16-alpine
 
 EXPOSE 5173:5173
 
@@ -11,5 +11,6 @@ COPY cvizard/package-lock.json /app/package-lock.json
 # RUN apk add --no-cache bash
 
 COPY . . 
-
-CMD ["cd","cvizard","&&","npm","i","&&","npm", "run", "dev"]
+RUN cd cvizard && npm i && npm i -g vite
+# CMD ["cd","cvizard","&&","npm","i","&&","npm", "run", "dev"]
+CMD ["npm", "run", "dev"]
