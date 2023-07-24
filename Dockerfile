@@ -15,4 +15,4 @@ RUN npm i && npm i -g vite
 
 COPY ./cvizard /app
 # CMD ["cd","cvizard","&&","npm","i","&&","npm", "run", "dev"]
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "build"]
