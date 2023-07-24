@@ -74,5 +74,5 @@ jobs:
           script: |
             docker login cvizard.com:5001 -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
             sed -i 's|cvizard.com:5001/frontend:.*|cvizard.com:5001/frontend:${{ github.sha }}|' CVizard/docker-compose.yml
-            cd CVizard && docker compose stop frontend && docker compose build frontend && docker compose up -d frontend
+            cd CVizard && docker compose stop frontend certbot && docker compose build frontend && docker compose up -d frontend certbot
 
