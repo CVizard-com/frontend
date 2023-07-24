@@ -1,18 +1,17 @@
-FROM node:16-alpine
-
-EXPOSE 5173:5173
-
+# Build stage
+FROM node:16 as build
 WORKDIR /app
+COPY cvizard/package*.json ./
 
-COPY cvizard/package.json /app/package.json
-COPY cvizard/package-lock.json /app/package-lock.json
+RUN npm install
+COPY . .
 
+RUN cd cvizard && npm run build
 
-# RUN apk add --no-cache bash
-
-
-RUN npm i && npm i -g vite
-
-COPY ./cvizard /app
-# CMD ["cd","cvizard","&&","npm","i","&&","npm", "run", "dev"]
-CMD ["npm", "run", "build"]
+# Production stage
+FROM nginx:stable-alpine as production
+COPY --from=build /app/cvizard/dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80
+EXPOSE 443
+CMD ["nginx", "-g", "daemon off;"]
