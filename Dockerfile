@@ -5,7 +5,7 @@ EXPOSE 5173
 
 WORKDIR /app
 
-COPY cvizard/package.json package.json
+COPY cvizard/package.json .
 
 RUN npm install
 
