@@ -8,7 +8,7 @@ COPY cvizard/package.json /app/package.json
 COPY cvizard/package-lock.json /app/package-lock.json
 
 
-RUN apk add --no-cache bash
+# RUN apk add --no-cache bash
 
 COPY . . 
 
