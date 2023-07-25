@@ -2,10 +2,8 @@
 FROM node:16 as build
 WORKDIR /app
 COPY cvizard/package*.json ./
-
 RUN npm install
 COPY . .
-
 RUN cd cvizard && npm run build
 
 # Production stage
