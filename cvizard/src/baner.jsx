@@ -11,6 +11,9 @@ export function Baner() {
         Specify helps you unify your brand identity by collecting, storing and
         distributing design tokens and assets — automatically.
       </p>
+      <p className="text-sm font-semibold leading-6 text-gray-900 ">
+        Drag and drop files or click the button below to add files!
+      </p>
     </div>
   );
 }
