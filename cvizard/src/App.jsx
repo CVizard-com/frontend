@@ -1,22 +1,18 @@
 import { useState, useEffect, useRef } from "react";
 
-import axios from "axios";
 import FileSaver from "file-saver";
 import { Baner } from "./Baner";
-import { PdfFile } from "./PdfFile";
-import { AddFileButton } from "./AddFileButton";
 import { PdfFileList } from "./PdfFileList";
 import { TransferButton } from "./TransferButton";
 import JSZip from "jszip";
+import { uploadFile } from "./service/file";
 
 export default function App() {
-  var filesStatus = "";
   const [files, setFiles] = useState(() => {
     const localValue = localStorage.getItem("ITEMS");
     if (localValue == null) return [];
     return JSON.parse(localValue);
   });
-  // const [filesStatus, setFilesStatus] = useState();
 
   useEffect(() => {
     localStorage.setItem("ITEMS", JSON.stringify(files));
@@ -49,17 +45,24 @@ export default function App() {
     });
   }
 
-  const uploadFiles = () => {
-    setFiles((currentFiles) => {
-      return currentFiles.map((file) => {
-        if (file.status === "pending") {
-          return { ...file, status: "done" };
-        }
-        return file;
-      });
-    });
-    console.log(files);
-  };
+  async function uploadFiles() {
+    const newFiles = [...files];
+
+    for (const file of newFiles) {
+      if (file.status === "pending") {
+        // Update status to 'uploading'
+        file.status = "uploading";
+        setFiles([...newFiles]);
+
+        // Call the function to upload the file
+        await uploadFile(file);
+
+        // After the promise resolves, update the status to 'done'
+        file.status = "done";
+        setFiles([...newFiles]);
+      }
+    }
+  }
 
   async function downloadFiles() {
     const zip = new JSZip();

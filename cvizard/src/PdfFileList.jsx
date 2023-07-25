@@ -13,12 +13,13 @@ export function PdfFileList({ files, addFile, deleteFile }) {
             return <PdfFile {...file} key={file.id} deleteFile={deleteFile} />;
           })}
 
-          {files.filter((file) => file.status !== "done").length ===
-            files.length && files.length > 0 ? (
-            <li className="flex justify-center bg-white sticky bottom-0">
-              <AddFileButton addFile={addFile} />
-            </li>
-          ) : null}
+          {files.filter((file) => file.status === "pending").length ===
+            files.length &&
+            files.length > 0 && (
+              <li className="flex justify-center bg-white sticky bottom-0">
+                <AddFileButton addFile={addFile} />
+              </li>
+            )}
         </ul>
       ) : (
         <>
