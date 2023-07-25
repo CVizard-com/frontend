@@ -7,7 +7,7 @@ COPY . .
 RUN cd cvizard && npm run build
 
 # Production stage
-FROM nginx:stable-alpine as production
+FROM nginx:latest as production
 COPY --from=build /app/cvizard/dist/ /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE 5173
