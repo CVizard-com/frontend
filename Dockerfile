@@ -7,9 +7,9 @@ COPY . .
 RUN cd cvizard && npm run build
 
 # Production stage
-FROM nginx:latest as production
+FROM nginx:alpine as production
 COPY --from=build /app/cvizard/dist/ /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx/nginx.conf
 EXPOSE 5173
 # EXPOSE 443
 CMD ["nginx", "-g", "daemon off;"]
