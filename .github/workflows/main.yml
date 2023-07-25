@@ -58,12 +58,12 @@ jobs:
       - name: install ssh
         run: sudo apt-get install -y ssh
         
-      - name: Login to Docker Registry
-        uses: docker/login-action@v1
-        with:
-          registry: https://cvizard.com:5001
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+#       - name: Login to Docker Registry
+#         uses: docker/login-action@v1
+#         with:
+#           registry: https://cvizard.com:5000/registry
+#           username: ${{ secrets.DOCKER_USERNAME }}
+#           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: executing remote ssh commands using password
         uses: appleboy/ssh-action@v0.1.10
@@ -72,7 +72,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            docker login cvizard.com:5001 -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+            docker login cvizard.com:5000 -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
             sed -i 's|cvizard.com:5001/frontend:.*|cvizard.com:5001/frontend:${{ github.sha }}|' CVizard/docker-compose.yml
             cd CVizard && docker compose stop frontend && docker compose build frontend && docker compose up -d frontend
 
