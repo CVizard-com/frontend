@@ -70,7 +70,7 @@ export default function App() {
     files.forEach((file) => {
       if (file.status === "done") {
         const blob = new Blob([file], { type: "application/pdf" });
-        zip.file(`${file.name}.pdf`, blob);
+        zip.file(`${file.name}`, blob);
       }
     });
 
