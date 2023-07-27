@@ -1,7 +1,7 @@
 export function PdfFile({ id, name, status, file, deleteFile }) {
   return (
     <>
-      <li className="grid grid-cols-4 gap-4 py-3 w-full px-4">
+      <li className="grid grid-cols-4 gap-4 py-3 w-full px-4 h-12">
         <p className="col-span-2 text-sm font-semibold leading-6 text-gray-900 overflow-hidden">
           {name}
         </p>

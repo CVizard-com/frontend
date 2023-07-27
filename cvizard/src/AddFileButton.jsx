@@ -1,24 +1,18 @@
-import React, { useRef } from "react";
+import React from "react";
+import { useDropzone } from "react-dropzone";
+
 export function AddFileButton({ addFile }) {
-  const fileInputRef = useRef();
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop: addFile,
+  });
+
   return (
-    <>
-      <button
-        type="file"
-        onClick={() => fileInputRef.current.click()}
-        accept="application/pdf"
-        className="rounded-md bg-cyan-500 px-5 py-3 font-medium text-white transition-colors hover:bg-cyan-600 my-2"
-      >
-        Add files
-      </button>
-      <input
-        type="file"
-        accept="application/pdf"
-        ref={fileInputRef}
-        style={{ display: "none" }}
-        onChange={addFile}
-        multiple
-      />
-    </>
+    <div
+      {...getRootProps()}
+      className="w-8/12 flex justify-center items-center text-base leading-relaxed rounded-md px-5 py-3 transition-colors hover:bg-slate-100 text-cyan-500 border-2 border-slate-300 mx-auto my-4"
+    >
+      <input {...getInputProps()} accept="application/pdf" />
+      <p>Drag and drop some files here, or click to select files</p>
+    </div>
   );
 }

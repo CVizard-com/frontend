@@ -1,11 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 
+import { AddFileButton } from "./AddFileButton";
 import FileSaver from "file-saver";
 import { Baner } from "./Baner";
 import { PdfFileList } from "./PdfFileList";
 import { TransferButton } from "./TransferButton";
 import JSZip from "jszip";
 import { uploadFile } from "./service/file";
+// import { GlobalDropzone } from "./GlobalDropZone";
 
 export default function App() {
   const [files, setFiles] = useState(() => {
@@ -18,8 +20,8 @@ export default function App() {
     localStorage.setItem("ITEMS", JSON.stringify(files));
   }, [files]);
 
-  function addFile(event) {
-    Array.from(event.target.files).forEach((file) => {
+  function addFile(acceptedFiles) {
+    acceptedFiles.forEach((file) => {
       const reader = new FileReader();
 
       reader.onload = (e) => {
@@ -88,6 +90,8 @@ export default function App() {
       <div className="mx-auto max-w-[43rem]">
         <Baner />
         <PdfFileList files={files} addFile={addFile} deleteFile={deleteFile} />
+
+        <AddFileButton addFile={addFile} />
 
         <div className="flex items-center justify-center">
           {someFilesPending && (
