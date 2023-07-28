@@ -5,9 +5,19 @@ import FileSaver from "file-saver";
 import { Baner } from "./Baner";
 import { PdfFileList } from "./PdfFileList";
 import { TransferButton } from "./TransferButton";
-import JSZip from "jszip";
-import { uploadFile } from "./service/file";
-// import { GlobalDropzone } from "./GlobalDropZone";
+import JSZip, { forEach } from "jszip";
+import axios from "axios";
+import axiosRetry from "axios-retry";
+
+axiosRetry(axios, {
+  retries: 300,
+  retryDelay: (retryCount) => {
+    return retryCount * 2000;
+  },
+  retryCondition: (error) => {
+    return error.response.status !== 200;
+  },
+});
 
 export default function App() {
   const [files, setFiles] = useState(() => {
@@ -20,8 +30,17 @@ export default function App() {
     localStorage.setItem("ITEMS", JSON.stringify(files));
   }, [files]);
 
+  const updateFileStatus = (id, newStatus) => {
+    setFiles((currentFiles) => {
+      return currentFiles.map((file) =>
+        file.id === id ? { ...file, status: newStatus } : file
+      );
+    });
+  };
+
   function addFile(acceptedFiles) {
     acceptedFiles.forEach((file) => {
+      console.log("jestem");
       const reader = new FileReader();
 
       reader.onload = (e) => {
@@ -36,6 +55,7 @@ export default function App() {
             },
           ];
         });
+        console.log("file_start", file);
       };
       reader.readAsDataURL(file);
     });
@@ -47,37 +67,119 @@ export default function App() {
     });
   }
 
-  async function uploadFiles() {
-    const newFiles = [...files];
+  function uploadFile({ file }) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        console.log("file", file);
+        console.log("file_file", file.file);
+        updateFileStatus(file.id, "uploading");
 
-    for (const file of newFiles) {
-      if (file.status === "pending") {
-        // Update status to 'uploading'
-        file.status = "uploading";
-        setFiles([...newFiles]);
+        const formData = new FormData();
+        formData.append("pdf_file", file.file);
+        formData.append("id", file.id);
 
-        // Call the function to upload the file
-        await uploadFile(file);
-
-        // After the promise resolves, update the status to 'done'
-        file.status = "done";
-        setFiles([...newFiles]);
+        const response = await axios.post(
+          `https://cvizard.com:8443/api/reader`,
+          formData
+        );
+        if (response.status === 200) {
+          updateFileStatus(file.id, "processing");
+          resolve(file);
+        } else {
+          updateFileStatus(file.id, "error");
+          reject(new Error("File upload failed"));
+        }
+      } catch (error) {
+        reject(error);
       }
+    });
+  }
+
+  function processFile({ file }) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const response = await axios.get(
+          `https://cvizard.com:8443/api/maker/download?key=${file.id}`
+        );
+
+        if (response.status === 200) {
+          updateFileStatus(file.id, "done");
+          resolve(file);
+        } else {
+          updateFileStatus(file.id, "error");
+          reject(new Error("File upload failed"));
+        }
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
+  async function uploadFiles() {
+    const uploadPromises = files.map((file) => {
+      if (file.status !== "pending") return Promise.resolve();
+      return uploadFile({ file });
+    });
+
+    const processPromises = files.map((file) => {
+      return processFile({ file });
+    });
+
+    try {
+      await Promise.all(uploadPromises);
+      await Promise.all(processPromises);
+    } catch (error) {
+      console.error("Error while uploading files", error);
     }
   }
 
-  async function downloadFiles() {
-    const zip = new JSZip();
+  const zip = new JSZip();
+  function downloadFile({ file }) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const response = await axios.get(
+          `https://cvizard.com:8443/api/maker/download?key=${file.id}`,
+          { responseType: "arraybuffer" }
+        );
 
-    files.forEach((file) => {
-      if (file.status === "done") {
-        const blob = new Blob([file], { type: "application/pdf" });
-        zip.file(`${file.name}`, blob);
+        if (response.status === 200) {
+          zip.file(`${file.name}`, response.data);
+          resolve(file);
+        } else {
+          reject(new Error("File download failed"));
+        }
+      } catch (error) {
+        reject(error);
       }
     });
+  }
 
-    const content = await zip.generateAsync({ type: "blob" });
-    saveAs(content, "cvizard.zip");
+  // async function downloadFiles() {
+  //   const zip = new JSZip();
+
+  //   files.forEach((file) => {
+  //     if (file.status === "done") {
+  //       const blob = new Blob([file], { type: "application/pdf" });
+  //       zip.file(`${file.name}`, blob);
+  //     }
+  //   });
+
+  //   const content = await zip.generateAsync({ type: "blob" });
+  //   saveAs(content, "cvizard.zip");
+  // }
+
+  async function downloadFiles() {
+    const downloadPromises = files.map((file) => {
+      // if (file.status !== "done") return Promise.resolve();
+      return downloadFile({ file });
+    });
+    try {
+      await Promise.all(downloadPromises);
+      const content = await zip.generateAsync({ type: "blob" });
+      saveAs(content, "cvizard.zip");
+    } catch (error) {
+      console.error("Error while downloading files", error);
+    }
   }
 
   const allFilesAreDone =
