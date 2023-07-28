@@ -40,7 +40,6 @@ export default function App() {
 
   function addFile(acceptedFiles) {
     acceptedFiles.forEach((file) => {
-      console.log("jestem");
       const reader = new FileReader();
 
       reader.onload = (e) => {
@@ -133,8 +132,7 @@ export default function App() {
     }
   }
 
-  const zip = new JSZip();
-  function downloadFile({ file }) {
+  function downloadFile({ file, zip }) {
     return new Promise(async (resolve, reject) => {
       try {
         const response = await axios.get(
@@ -154,28 +152,14 @@ export default function App() {
     });
   }
 
-  // async function downloadFiles() {
-  //   const zip = new JSZip();
-
-  //   files.forEach((file) => {
-  //     if (file.status === "done") {
-  //       const blob = new Blob([file], { type: "application/pdf" });
-  //       zip.file(`${file.name}`, blob);
-  //     }
-  //   });
-
-  //   const content = await zip.generateAsync({ type: "blob" });
-  //   saveAs(content, "cvizard.zip");
-  // }
-
   async function downloadFiles() {
+    const myZip = new JSZip();
     const downloadPromises = files.map((file) => {
-      // if (file.status !== "done") return Promise.resolve();
-      return downloadFile({ file });
+      return downloadFile({ file, zip: myZip });
     });
     try {
       await Promise.all(downloadPromises);
-      const content = await zip.generateAsync({ type: "blob" });
+      const content = await myZip.generateAsync({ type: "blob" });
       saveAs(content, "cvizard.zip");
     } catch (error) {
       console.error("Error while downloading files", error);
@@ -191,7 +175,7 @@ export default function App() {
     <section className="flex items-center justify-center min-h-screen w-full bg-white">
       <div className="mx-auto max-w-[43rem]">
         <Baner />
-        <PdfFileList files={files} addFile={addFile} deleteFile={deleteFile} />
+        <PdfFileList files={files} addFile={addFile} deleteFile={deleteFile} uploadFile={uploadFile} />
 
         <AddFileButton addFile={addFile} />
 
