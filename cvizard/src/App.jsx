@@ -132,7 +132,7 @@ export default function App() {
     }
   }
 
-  function downloadFile({ file, zip }) {
+  function fetchFile({ file }) {
     return new Promise(async (resolve, reject) => {
       try {
         const response = await axios.get(
@@ -141,8 +141,7 @@ export default function App() {
         );
 
         if (response.status === 200) {
-          zip.file(`${file.name}`, response.data);
-          resolve(file);
+          resolve(response.data);
         } else {
           reject(new Error("File download failed"));
         }
@@ -152,20 +151,22 @@ export default function App() {
     });
   }
 
-  async function downloadFiles() {
+  async function downloadFilesZip() {
     const myZip = new JSZip();
-    const downloadPromises = files.map((file) => {
-      return downloadFile({ file, zip: myZip });
+    const downloadPromises = files.map(async (file) => {
+      const content = await fetchFile({ file });
+      myZip.file(file.name, content);
     });
+  
     try {
       await Promise.all(downloadPromises);
-      const content = await myZip.generateAsync({ type: "blob" });
-      saveAs(content, "cvizard.zip");
+      const zipContent = await myZip.generateAsync({ type: "blob" });
+      saveAs(zipContent, "cvizard.zip");
     } catch (error) {
       console.error("Error while downloading files", error);
     }
   }
-
+  
   const allFilesAreDone =
     files.every((file) => file.status === "done") && files.length > 0;
   const someFilesPending =
@@ -175,7 +176,7 @@ export default function App() {
     <section className="flex items-center justify-center min-h-screen w-full bg-white">
       <div className="mx-auto max-w-[43rem]">
         <Baner />
-        <PdfFileList files={files} addFile={addFile} deleteFile={deleteFile} uploadFile={uploadFile} />
+        <PdfFileList files={files} addFile={addFile} deleteFile={deleteFile} uploadFile={uploadFile} fetchFile={fetchFile} />
 
         <AddFileButton addFile={addFile} />
 
@@ -186,7 +187,7 @@ export default function App() {
           {allFilesAreDone && (
             <TransferButton
               label="Download files"
-              transferFiles={downloadFiles}
+              transferFiles={downloadFilesZip}
             />
           )}
         </div>

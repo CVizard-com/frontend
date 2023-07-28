@@ -1,12 +1,6 @@
-import axios from "axios";
-
-async function donwloadOneFile({ file }) {
+async function donwloadOneFile({ file, fetchFile }) {
   try {
-    const response = await axios.get(
-      `https://cvizard.com:8443/api/maker/download?key=${file.id}`,
-      { responseType: "arraybuffer" }
-    );
-    const pdfData = await response.data;
+    const pdfData = await fetchFile({ file });
     const pdfBlob = new Blob([pdfData], { type: 'application/pdf' });
     saveAs(pdfBlob, file.name);
 
@@ -15,7 +9,7 @@ async function donwloadOneFile({ file }) {
   }
 }
 
-export function PdfFile({ file, deleteFile }) {
+export function PdfFile({ file, deleteFile, fetchFile }) {
   return (
     <>
       <li className="grid grid-cols-4 gap-4 py-3 w-full px-4 h-12">
@@ -32,7 +26,7 @@ export function PdfFile({ file, deleteFile }) {
               ? "text-blue-500"
               : "text-lime-500 "
           }`}
-          onClick={() => donwloadOneFile({ file })}
+          onClick={() => donwloadOneFile({ file, fetchFile })}
           disabled={file.status !== "done"}
         >
           {file.status}

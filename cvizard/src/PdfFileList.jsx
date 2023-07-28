@@ -1,6 +1,6 @@
 import { PdfFile } from "./PdfFile";
 
-export function PdfFileList({ files, deleteFile }) {
+export function PdfFileList({ files, deleteFile, fetchFile }) {
   return (
     <div className="flex items-center justify-center">
       {files.length > 0 ? (
@@ -10,7 +10,7 @@ export function PdfFileList({ files, deleteFile }) {
         >
           {files.length === 0}
           {files.map((file) => {
-            return <PdfFile file={file} deleteFile={deleteFile}/>;
+            return <PdfFile file={file} deleteFile={deleteFile} fetchFile={fetchFile}/>;
           })}
 
           {files.filter((file) => file.status === "pending").length ===
