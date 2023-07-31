@@ -49,12 +49,11 @@ export default function App() {
             {
               id: crypto.randomUUID(),
               name: file.name,
-              status: "pending",
+              status: "Pending",
               file: file,
             },
           ];
         });
-        console.log("file_start", file);
       };
       reader.readAsDataURL(file);
     });
@@ -69,9 +68,7 @@ export default function App() {
   function uploadFile({ file }) {
     return new Promise(async (resolve, reject) => {
       try {
-        console.log("file", file);
-        console.log("file_file", file.file);
-        updateFileStatus(file.id, "uploading");
+        updateFileStatus(file.id, "Uploading");
 
         const formData = new FormData();
         formData.append("pdf_file", file.file);
@@ -82,10 +79,9 @@ export default function App() {
           formData
         );
         if (response.status === 200) {
-          updateFileStatus(file.id, "processing");
+          updateFileStatus(file.id, "Processing");
           resolve(file);
         } else {
-          updateFileStatus(file.id, "error");
           reject(new Error("File upload failed"));
         }
       } catch (error) {
@@ -102,10 +98,9 @@ export default function App() {
         );
 
         if (response.status === 200) {
-          updateFileStatus(file.id, "done");
+          updateFileStatus(file.id, "Download");
           resolve(file);
         } else {
-          updateFileStatus(file.id, "error");
           reject(new Error("File upload failed"));
         }
       } catch (error) {
@@ -116,7 +111,7 @@ export default function App() {
 
   async function uploadFiles() {
     const uploadPromises = files.map((file) => {
-      if (file.status !== "pending") return Promise.resolve();
+      if (file.status !== "Pending") return Promise.resolve();
       return uploadFile({ file });
     });
 
@@ -157,7 +152,7 @@ export default function App() {
       const content = await fetchFile({ file });
       myZip.file(file.name, content);
     });
-  
+
     try {
       await Promise.all(downloadPromises);
       const zipContent = await myZip.generateAsync({ type: "blob" });
@@ -166,17 +161,23 @@ export default function App() {
       console.error("Error while downloading files", error);
     }
   }
-  
+
   const allFilesAreDone =
-    files.every((file) => file.status === "done") && files.length > 0;
+    files.every((file) => file.status === "Download") && files.length > 0;
   const someFilesPending =
-    files.some((file) => file.status !== "done") && files.length > 0;
+    files.some((file) => file.status !== "Download") && files.length > 0;
 
   return (
     <section className="flex items-center justify-center min-h-screen w-full bg-white">
       <div className="mx-auto max-w-[43rem]">
         <Baner />
-        <PdfFileList files={files} addFile={addFile} deleteFile={deleteFile} uploadFile={uploadFile} fetchFile={fetchFile} />
+        <PdfFileList
+          files={files}
+          addFile={addFile}
+          deleteFile={deleteFile}
+          uploadFile={uploadFile}
+          fetchFile={fetchFile}
+        />
 
         <AddFileButton addFile={addFile} />
 

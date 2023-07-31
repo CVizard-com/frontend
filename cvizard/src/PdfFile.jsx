@@ -1,9 +1,8 @@
-async function donwloadOneFile({ file, fetchFile }) {
+async function downloadOneFile({ file, fetchFile }) {
   try {
     const pdfData = await fetchFile({ file });
-    const pdfBlob = new Blob([pdfData], { type: 'application/pdf' });
+    const pdfBlob = new Blob([pdfData], { type: "application/pdf" });
     saveAs(pdfBlob, file.name);
-
   } catch (error) {
     console.error("Error while downloading file", error);
   }
@@ -17,24 +16,28 @@ export function PdfFile({ file, deleteFile, fetchFile }) {
           {file.name}
         </p>
         <button
-          className={` font-medium text-xs leading-6 rounded-md ring-1 ${
-            file.status === "pending"
+          className={`inline-flex items-center justify-center rounded-md px-2 py-1 text-xs font-medium ${
+            file.status === "Pending"
               ? "text-gray-500"
-              : file.status === "uploading"
+              : file.status === "Uploading"
               ? "text-yellow-500"
-              : file.status === "processing"
+              : file.status === "Processing"
               ? "text-blue-500"
-              : "text-lime-500 "
+              : file.status === "Download"
+              ? "border border-lime-500 text-lime-500 hover:bg-lime-100"
+              : ""
           }`}
-          onClick={() => donwloadOneFile({ file, fetchFile })}
-          disabled={file.status !== "done"}
+          onClick={() => downloadOneFile({ file, fetchFile })}
+          disabled={file.status !== "Download"}
         >
           {file.status}
         </button>
 
         <button
           onClick={() => deleteFile(file.id)}
-          className={"inline-flex items-center justify-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset bg-red-100 text-red-700 ring-red-600/10"}
+          className={
+            "inline-flex items-center justify-center rounded-md px-2 py-1 text-xs font-medium hover:bg-red-100 text-red-700 border border-red-700"
+          }
         >
           Delete
         </button>

@@ -9,7 +9,7 @@ export function AddFileButton({ addFile }) {
   return (
     <div
       {...getRootProps()}
-      className="w-8/12 flex justify-center items-center text-base leading-relaxed rounded-md px-5 py-3 transition-colors hover:bg-slate-100 text-cyan-500 border-2 border-slate-300 mx-auto my-4"
+      className="w-8/12 flex justify-center items-center text-base leading-relaxed rounded-md px-5 py-3 transition-colors hover:bg-slate-100 text-cyan-500 border-2 border-slate-300 mx-auto my-4 cursor-pointer"
     >
       <input {...getInputProps()} accept="application/pdf" />
       <p className="text-center">

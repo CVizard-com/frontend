@@ -10,7 +10,14 @@ export function PdfFileList({ files, deleteFile, fetchFile }) {
         >
           {files.length === 0}
           {files.map((file) => {
-            return <PdfFile file={file} deleteFile={deleteFile} fetchFile={fetchFile}/>;
+            return (
+              <PdfFile
+                key={file.id}
+                file={file}
+                deleteFile={deleteFile}
+                fetchFile={fetchFile}
+              />
+            );
           })}
 
           {files.filter((file) => file.status === "pending").length ===
