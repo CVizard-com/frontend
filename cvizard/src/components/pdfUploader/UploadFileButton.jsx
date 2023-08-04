@@ -1,18 +1,18 @@
 import React, { useContext } from "react";
-import { FilesContext } from "../App";
+import { FilesContext } from "../../App";
 
 import axios from "axios";
-// import axiosRetry from "axios-retry";
+import axiosRetry from "axios-retry";
 
-// axiosRetry(axios, {
-//   retries: 300,
-//   retryDelay: (retryCount) => {
-//     return retryCount * 2000;
-//   },
-//   retryCondition: (error) => {
-//     return error.response.status !== 200;
-//   },
-// });
+axiosRetry(axios, {
+  retries: 5,
+  retryDelay: (retryCount) => {
+    return retryCount * 2000;
+  },
+  retryCondition: (error) => {
+    return error.response.status !== 200;
+  },
+});
 
 export function UploadFileButton() {
   const { files, setFiles } = useContext(FilesContext);
@@ -39,7 +39,7 @@ export function UploadFileButton() {
           formData
         );
         if (response.status === 200) {
-          updateFileStatus(file.id, "Processing");
+          updateFileStatus(file.id, "Uploaded");
           resolve(file);
         } else {
           reject(new Error("File upload failed"));

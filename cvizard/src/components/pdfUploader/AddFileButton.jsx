@@ -1,5 +1,5 @@
 import React, { useRef, useContext } from "react";
-import { FilesContext } from "../App";
+import { FilesContext } from "../../App";
 
 export function AddFileButton() {
   const { files, setFiles } = useContext(FilesContext);
@@ -16,9 +16,16 @@ export function AddFileButton() {
             ...currentFiles,
             {
               id: crypto.randomUUID(),
-              name: file.name,
+              fileName: file.name,
               status: "Pending",
               file: file,
+              isActive: false,
+              name: [],
+              address: [],
+              phone: [],
+              email: [],
+              website: [],
+              other: [],
             },
           ];
         });

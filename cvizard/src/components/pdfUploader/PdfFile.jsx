@@ -1,8 +1,11 @@
 import React, { useRef, useContext } from "react";
-import { FilesContext } from "../App";
+import { FilesContext } from "../../App";
 
 export function PdfFile({ file }) {
   const { files, setFiles } = useContext(FilesContext);
+
+  const allFilesUploaded =
+    files.some((file) => file.status === "Uploaded") && files.length > 0;
 
   function deleteFile(id) {
     setFiles((currentFiles) => {
@@ -10,11 +13,21 @@ export function PdfFile({ file }) {
     });
   }
 
+  const toggleActive = (id) => {
+    setFiles((currentFiles) => {
+      return currentFiles.map((file) =>
+        file.id === id
+          ? { ...file, isActive: !file.isActive }
+          : { ...file, isActive: false }
+      );
+    });
+  };
+
   async function downloadOneFile({ file }) {
     try {
       const pdfData = await fetchFile({ file });
       const pdfBlob = new Blob([pdfData], { type: "application/pdf" });
-      saveAs(pdfBlob, file.name);
+      saveAs(pdfBlob, file.fileName);
     } catch (error) {
       console.error("Error while downloading file", error);
     }
@@ -41,9 +54,21 @@ export function PdfFile({ file }) {
 
   return (
     <>
-      <li className="grid grid-cols-4 gap-4 py-3 w-full px-4 h-12 hover:bg-cyan-100">
+      <li
+        onClick={() => toggleActive(file.id)}
+        className={`grid grid-cols-4 gap-4 py-3 w-full px-4 h-12 ${
+          allFilesUploaded ? "cursor-pointer" : ""
+        }
+        ${allFilesUploaded && file.isActive ? "bg-cyan-100" : ""}
+        ${
+          allFilesUploaded && file.isActive
+            ? "hover:bg-cyan-200"
+            : "hover:bg-slate-100"
+        }
+        `}
+      >
         <p className="col-span-2 text-sm font-semibold leading-6 text-gray-900 overflow-hidden ">
-          {file.name}
+          {file.fileName}
         </p>
         <button
           className={`inline-flex items-center justify-center rounded-md px-2 py-1 text-xs font-medium ${

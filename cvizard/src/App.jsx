@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, createContext } from "react";
 import JSZip, { forEach } from "jszip";
 
 import { PdfUploader } from "./containers/PdfUploader";
+import { DataForm } from "./containers/DataForm";
 
 export const FilesContext = createContext();
 
@@ -58,7 +59,7 @@ export default function App() {
     const myZip = new JSZip();
     const downloadPromises = files.map(async (file) => {
       const content = await fetchFile({ file });
-      myZip.file(file.name, content);
+      myZip.file(file.fileName, content);
     });
 
     try {
@@ -72,8 +73,8 @@ export default function App() {
 
   const allFilesAreDone =
     files.every((file) => file.status === "Download") && files.length > 0;
-  const someFilesPending =
-    files.some((file) => file.status !== "Download") && files.length > 0;
+  const allFilesUploaded =
+    files.every((file) => file.status === "Uploaded") && files.length > 0;
 
   return (
     // <section className="flex items-center justify-center min-h-screen w-full bg-white">
@@ -104,6 +105,7 @@ export default function App() {
     // </section>
     <FilesContext.Provider value={{ files, setFiles }}>
       <PdfUploader />
+      {allFilesUploaded && <DataForm />}
     </FilesContext.Provider>
   );
 }

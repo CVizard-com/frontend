@@ -1,6 +1,6 @@
 import { PdfFile } from "./PdfFile";
 import React, { useContext } from "react";
-import { FilesContext } from "../App";
+import { FilesContext } from "../../App";
 
 export function PdfFileList() {
   const { files, setFiles } = useContext(FilesContext);
