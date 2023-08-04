@@ -1,23 +1,9 @@
-import { useState, useEffect, useRef } from "react";
-
-import { AddFileButton } from "./AddFileButton";
-import FileSaver from "file-saver";
-import { Baner } from "./Baner";
-import { PdfFileList } from "./PdfFileList";
-import { TransferButton } from "./TransferButton";
+import { useState, useEffect, useRef, createContext } from "react";
 import JSZip, { forEach } from "jszip";
-import axios from "axios";
-import axiosRetry from "axios-retry";
 
-axiosRetry(axios, {
-  retries: 300,
-  retryDelay: (retryCount) => {
-    return retryCount * 2000;
-  },
-  retryCondition: (error) => {
-    return error.response.status !== 200;
-  },
-});
+import { PdfUploader } from "./containers/PdfUploader";
+
+export const FilesContext = createContext();
 
 export default function App() {
   const [files, setFiles] = useState(() => {
@@ -29,66 +15,6 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem("ITEMS", JSON.stringify(files));
   }, [files]);
-
-  const updateFileStatus = (id, newStatus) => {
-    setFiles((currentFiles) => {
-      return currentFiles.map((file) =>
-        file.id === id ? { ...file, status: newStatus } : file
-      );
-    });
-  };
-
-  function addFile(acceptedFiles) {
-    acceptedFiles.forEach((file) => {
-      const reader = new FileReader();
-
-      reader.onload = (e) => {
-        setFiles((currentFiles) => {
-          return [
-            ...currentFiles,
-            {
-              id: crypto.randomUUID(),
-              name: file.name,
-              status: "Pending",
-              file: file,
-            },
-          ];
-        });
-      };
-      reader.readAsDataURL(file);
-    });
-  }
-
-  function deleteFile(id) {
-    setFiles((currentFiles) => {
-      return currentFiles.filter((file) => file.id !== id);
-    });
-  }
-
-  function uploadFile({ file }) {
-    return new Promise(async (resolve, reject) => {
-      try {
-        updateFileStatus(file.id, "Uploading");
-
-        const formData = new FormData();
-        formData.append("pdf_file", file.file);
-        formData.append("id", file.id);
-
-        const response = await axios.post(
-          `https://cvizard.com:8443/api/reader`,
-          formData
-        );
-        if (response.status === 200) {
-          updateFileStatus(file.id, "Processing");
-          resolve(file);
-        } else {
-          reject(new Error("File upload failed"));
-        }
-      } catch (error) {
-        reject(error);
-      }
-    });
-  }
 
   function processFile({ file }) {
     return new Promise(async (resolve, reject) => {
@@ -107,24 +33,6 @@ export default function App() {
         reject(error);
       }
     });
-  }
-
-  async function uploadFiles() {
-    const uploadPromises = files.map((file) => {
-      if (file.status !== "Pending") return Promise.resolve();
-      return uploadFile({ file });
-    });
-
-    const processPromises = files.map((file) => {
-      return processFile({ file });
-    });
-
-    try {
-      await Promise.all(uploadPromises);
-      await Promise.all(processPromises);
-    } catch (error) {
-      console.error("Error while uploading files", error);
-    }
   }
 
   function fetchFile({ file }) {
@@ -168,31 +76,34 @@ export default function App() {
     files.some((file) => file.status !== "Download") && files.length > 0;
 
   return (
-    <section className="flex items-center justify-center min-h-screen w-full bg-white">
-      <div className="mx-auto max-w-[43rem]">
-        <Baner />
-        <PdfFileList
-          files={files}
-          addFile={addFile}
-          deleteFile={deleteFile}
-          uploadFile={uploadFile}
-          fetchFile={fetchFile}
-        />
+    // <section className="flex items-center justify-center min-h-screen w-full bg-white">
+    //   <div className="mx-auto max-w-[43rem]">
+    //     <Baner />
+    //     <PdfFileList
+    //       files={files}
+    //       addFile={addFile}
+    //       deleteFile={deleteFile}
+    //       uploadFile={uploadFile}
+    //       fetchFile={fetchFile}
+    //     />
 
-        <AddFileButton addFile={addFile} />
+    //     <AddFileButton addFile={addFile} />
 
-        <div className="flex items-center justify-center">
-          {someFilesPending && (
-            <TransferButton label="Upload files" transferFiles={uploadFiles} />
-          )}
-          {allFilesAreDone && (
-            <TransferButton
-              label="Download files"
-              transferFiles={downloadFilesZip}
-            />
-          )}
-        </div>
-      </div>
-    </section>
+    //     <div className="flex items-center justify-center">
+    //       {someFilesPending && (
+    //         <TransferButton label="Upload files" transferFiles={uploadFiles} />
+    //       )}
+    //       {allFilesAreDone && (
+    //         <TransferButton
+    //           label="Download files"
+    //           transferFiles={downloadFilesZip}
+    //         />
+    //       )}
+    //     </div>
+    //   </div>
+    // </section>
+    <FilesContext.Provider value={{ files, setFiles }}>
+      <PdfUploader />
+    </FilesContext.Provider>
   );
 }
