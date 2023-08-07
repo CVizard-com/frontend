@@ -17,7 +17,7 @@ export function AddFileButton() {
             {
               id: crypto.randomUUID(),
               fileName: file.name,
-              status: "Pending",
+              status: "Uploaded",
               file: file,
               isActive: false,
               name: [],
@@ -41,7 +41,7 @@ export function AddFileButton() {
         accept="application/pdf"
         className="flex flex-wrap items-center justify-center w-36 mx-auto rounded-lg bg-cyan-500 py-2 text-white transition-colors hover:bg-cyan-600 my-2"
       >
-        <img src="../../images/addFileIcon.png" className="w-6" />
+        <img src="../../images/addFileIcon.png" className="w-6 mx-1" />
         Add files
       </button>
       <input

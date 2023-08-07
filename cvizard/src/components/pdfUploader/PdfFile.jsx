@@ -13,7 +13,7 @@ export function PdfFile({ file }) {
     });
   }
 
-  const toggleActive = (id) => {
+  function toggleActive(id) {
     setFiles((currentFiles) => {
       return currentFiles.map((file) =>
         file.id === id
@@ -21,7 +21,20 @@ export function PdfFile({ file }) {
           : { ...file, isActive: false }
       );
     });
-  };
+  }
+
+  function addField(value) {
+    setFormData((currentFormData) => {
+      return [
+        ...currentFormData,
+        {
+          id: crypto.randomUUID(),
+          name: name,
+          value: value,
+        },
+      ];
+    });
+  }
 
   async function downloadOneFile({ file }) {
     try {

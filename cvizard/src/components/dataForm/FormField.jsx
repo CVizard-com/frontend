@@ -14,7 +14,7 @@ export function FormField({ field }) {
       <input
         type="text"
         placeholder="text..."
-        className="placeholder:italic focus:outline-none"
+        className="placeholder:italic focus:outline-none overflow-hidden"
         defaultValue={field.value}
       />
       <button onClick={() => deleteField(field.id)}>
