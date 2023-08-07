@@ -44,7 +44,7 @@ export function FormList({ name }) {
     //     </button>
     //   </div>
     // </div>
-    <div className="flex flex-col items-center justify-center w-full px-20 h-full">
+    <div className="flex flex-col items-center justify-center w-full px-20 h-full pb-6">
       <p className="w-full px-8 mx-auto text-left font-medium text-cyan-500">
         {name}
       </p>
