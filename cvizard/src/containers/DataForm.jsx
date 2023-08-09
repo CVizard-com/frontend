@@ -8,7 +8,7 @@ import { FilesContext } from "../App";
 export const FormContext = createContext();
 
 export function DataForm() {
-  const [formData, setFormData] = useState([{ id: "", name: "", value: "" }]);
+  const [formData, setFormData] = useState([]);
   const { files, setFiles } = useContext(FilesContext);
   const activeFile = files.find((file) => file.isActive);
 

@@ -33,13 +33,21 @@ export function AddFileButton() {
       reader.readAsDataURL(file);
     });
   }
+  const allFilesUploaded =
+    files.every((file) => file.status === "Uploaded") && files.length > 0;
   return (
     <>
       <button
         type="file"
         onClick={() => fileInputRef.current.click()}
+        disabled={allFilesUploaded}
         accept="application/pdf"
-        className="flex flex-wrap items-center justify-center w-36 mx-auto rounded-lg bg-cyan-500 py-2 text-white transition-colors hover:bg-cyan-600 my-2"
+        className={`flex flex-wrap items-center justify-center w-36 h-10 mx-auto rounded-lg text-white transition-colors py-2 my-2
+        ${
+          allFilesUploaded
+            ? "bg-gray-400 cursor-not-allowed"
+            : "bg-cyan-500 hover:bg-cyan-600"
+        }`}
       >
         <img src="../../images/addFileIcon.png" className="w-6 mx-1" />
         Add files

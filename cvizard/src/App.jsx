@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef, createContext } from "react";
 import JSZip, { forEach } from "jszip";
-
+import { Element, scroller } from "react-scroll";
 import { PdfUploader } from "./containers/PdfUploader";
 import { DataForm } from "./containers/DataForm";
+import { TemplateSelector } from "./containers/TemplateSelector";
 
 export const FilesContext = createContext();
 
@@ -13,9 +14,9 @@ export default function App() {
     return JSON.parse(localValue);
   });
 
-  useEffect(() => {
-    localStorage.setItem("ITEMS", JSON.stringify(files));
-  }, [files]);
+  // useEffect(() => {
+  //   localStorage.setItem("ITEMS", JSON.stringify(files));
+  // }, [files]);
 
   function processFile({ file }) {
     return new Promise(async (resolve, reject) => {
@@ -70,42 +71,65 @@ export default function App() {
       console.error("Error while downloading files", error);
     }
   }
+  function changeStatusAll(status) {
+    setFiles((currentFiles) => {
+      return currentFiles.map((file) => {
+        return { ...file, status };
+      });
+    });
+  }
+  function toggleActive(id) {
+    setFiles((currentFiles) => {
+      return currentFiles.map((file) =>
+        file.id === id
+          ? { ...file, isActive: !file.isActive }
+          : { ...file, isActive: false }
+      );
+    });
+  }
 
-  const allFilesAreDone =
-    files.every((file) => file.status === "Download") && files.length > 0;
   const allFilesUploaded =
     files.every((file) => file.status === "Uploaded") && files.length > 0;
 
+  const allFilesAreDone =
+    files.every((file) => file.status === "Processing") && files.length > 0;
+
+  useEffect(() => {
+    if (allFilesUploaded) {
+      toggleActive(files[0].id);
+      scroller.scrollTo("DataFormElement", {
+        duration: 800,
+        delay: 0,
+        smooth: "easeInOutQuart",
+      });
+    }
+  }, [allFilesUploaded]);
+
+  useEffect(() => {
+    if (allFilesAreDone) {
+      scroller.scrollTo("TemplateSelectorElement", {
+        duration: 800,
+        delay: 0,
+        smooth: "easeInOutQuart",
+      });
+    }
+  }, [allFilesAreDone]);
+
   return (
-    // <section className="flex items-center justify-center min-h-screen w-full bg-white">
-    //   <div className="mx-auto max-w-[43rem]">
-    //     <Baner />
-    //     <PdfFileList
-    //       files={files}
-    //       addFile={addFile}
-    //       deleteFile={deleteFile}
-    //       uploadFile={uploadFile}
-    //       fetchFile={fetchFile}
-    //     />
-
-    //     <AddFileButton addFile={addFile} />
-
-    //     <div className="flex items-center justify-center">
-    //       {someFilesPending && (
-    //         <TransferButton label="Upload files" transferFiles={uploadFiles} />
-    //       )}
-    //       {allFilesAreDone && (
-    //         <TransferButton
-    //           label="Download files"
-    //           transferFiles={downloadFilesZip}
-    //         />
-    //       )}
-    //     </div>
-    //   </div>
-    // </section>
     <FilesContext.Provider value={{ files, setFiles }}>
-      <PdfUploader />
-      {allFilesUploaded && <DataForm />}
+      <PdfUploader allFilesUploaded={allFilesUploaded} />
+      {allFilesUploaded && (
+        <Element name="DataFormElement">
+          <DataForm />
+        </Element>
+      )}
+      {allFilesAreDone && (
+        <Element name="TemplateSelectorElement">
+          <TemplateSelector />
+        </Element>
+      )}
+      <button onClick={() => changeStatusAll("Processing")}>Processing</button>
+      <button onClick={() => changeStatusAll("Uploaded")}>Uploaded</button>
     </FilesContext.Provider>
   );
 }

@@ -19,31 +19,6 @@ export function FormList({ name }) {
   }
   const filteredData = formData.filter((field) => field.name === name);
   return (
-    // <div className="flex flex-wrap content-start justify-center w-8/12 h-36">
-    //   <p className="w-full px-8 mx-auto text-left font-medium text-cyan-500">
-    //     {name}
-    //   </p>
-    //   <div className="flex flex-wrap items-center justify-center w-full mx-auto rounded-lg border-2 border-slate-300 overflow-hidden">
-    //     {filteredData.length !== 0 && (
-    //       <ul
-    //         role="list"
-    //         className="divide-y-2 divide-slate-300 w-full max-h-28 overflow-hidden overflow-y-scroll border-b-2 border-slate-300"
-    //       >
-    //         {filteredData.map((field) => {
-    //           return <FormField key={field.id} field={field} />;
-    //         })}
-    //       </ul>
-    //     )}
-
-    //     <button
-    //       className="flex items-center w-full px-8 text-left text-slate-400 hover:bg-slate-100"
-    //       onClick={() => addField()}
-    //     >
-    //       <img src="../../images/plus.png" className="w-4" />
-    //       Add field
-    //     </button>
-    //   </div>
-    // </div>
     <div className="flex flex-col items-center justify-center w-full px-20 h-full pb-6">
       <p className="w-full px-8 mx-auto text-left font-medium text-cyan-500">
         {name}

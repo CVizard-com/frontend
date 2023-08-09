@@ -1,6 +1,6 @@
 export function PdfUploaderBaner() {
   return (
-    <div className="text-center ">
+    <div className="text-center">
       <p className="text-lg font-medium leading-8 text-cyan-500">
         Introducing CVizard
       </p>
