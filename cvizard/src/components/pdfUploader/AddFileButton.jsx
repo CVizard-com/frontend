@@ -17,7 +17,7 @@ export function AddFileButton() {
             {
               id: crypto.randomUUID(),
               fileName: file.name,
-              status: "Uploaded",
+              status: "Pending",
               file: file,
               isActive: false,
               name: [],
