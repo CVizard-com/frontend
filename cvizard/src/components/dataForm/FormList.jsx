@@ -1,36 +1,53 @@
 import { FormField } from "./FormField";
 import React, { useContext } from "react";
-import { FormContext } from "../../containers/DataForm";
+import { FilesContext } from "../../App";
 
-export function FormList({ name }) {
-  const { formData, setFormData } = useContext(FormContext);
+export function FormList({ fieldName, file }) {
+  // const { formData, setFormData } = useContext(FormContext);
+  const { files, setFiles } = useContext(FilesContext);
 
-  function addField(value) {
-    setFormData((currentFormData) => {
-      return [
-        ...currentFormData,
-        {
-          id: crypto.randomUUID(),
-          name: name,
-          value: value,
-        },
-      ];
+  const addField = () => {
+    setFiles((currentFiles) => {
+      return currentFiles.map((mapFile) => {
+        if (mapFile.id === file.id) {
+          return {
+            ...mapFile,
+            fields: {
+              ...mapFile.fields,
+              [fieldName]: [
+                ...mapFile.fields[fieldName],
+                { id: crypto.randomUUID(), value: "" },
+              ],
+            },
+          };
+        } else {
+          return mapFile;
+        }
+      });
     });
-  }
-  const filteredData = formData.filter((field) => field.name === name);
+  };
+
   return (
     <div className="flex flex-col items-center justify-center w-full px-20 h-full pb-6">
       <p className="w-full px-8 mx-auto text-left font-medium text-cyan-500">
-        {name}
+        {fieldName}
       </p>
-      <div className="absolute top-0 relative h-36 items-center justify-center w-full mx-auto rounded-lg border-2 border-slate-300 overflow-hidden">
-        {filteredData.length !== 0 && (
+      <div className="top-0 relative h-36 items-center justify-center w-full mx-auto rounded-lg border-2 border-slate-300 overflow-hidden">
+        {file.fields[fieldName].length !== 0 && (
           <ul
             role="list"
             className="h-28 mt-auto divide-y-2 divide-slate-300 w-full max-h-32 overflow-hidden overflow-y-scroll"
           >
-            {filteredData.map((field) => {
-              return <FormField key={field.id} field={field} className="h-8" />;
+            {file.fields[fieldName].map((field) => {
+              return (
+                <FormField
+                  key={field.id}
+                  file={file}
+                  field={field}
+                  fieldName={fieldName}
+                  className="h-8"
+                />
+              );
             })}
           </ul>
         )}

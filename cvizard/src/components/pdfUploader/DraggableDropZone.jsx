@@ -23,15 +23,17 @@ export function DraggableDropZone() {
             {
               id: crypto.randomUUID(),
               fileName: file.name,
-              status: "Uploaded",
+              status: "Pending",
               file: file,
               isActive: false,
-              name: [],
-              address: [],
-              phone: [],
-              email: [],
-              website: [],
-              other: [],
+              fields: {
+                name: [],
+                address: [],
+                phone: [],
+                website: [],
+                email: [],
+                other: [],
+              },
             },
           ];
         });

@@ -20,12 +20,14 @@ export function AddFileButton() {
               status: "Pending",
               file: file,
               isActive: false,
-              name: [],
-              address: [],
-              phone: [],
-              email: [],
-              website: [],
-              other: [],
+              fields: {
+                name: [],
+                address: [],
+                phone: [],
+                website: [],
+                email: [],
+                other: [],
+              },
             },
           ];
         });
