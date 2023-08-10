@@ -40,13 +40,13 @@ export function ProcessButton({ activeFile }) {
   async function handleNextItem() {
     const nextFile = getNextItem();
     toggleActive(nextFile.id);
-    //---------DELETE----------------
-    const json = {
-      id: nextFile.id.toString(),
-      text: "Johnnie Ramos johnnie.ramos@gmail.com 708-678-627 Warsaw, Poland, Education 2015/10 – 2020/05 London, UK Languages Polish C2 A-Level Degree Abbey DLD College London Spanish B1 Certificates Certified Customer Service Professional (CCSP) 2016/10 Professional Experience 2020/01 – present 2019/08 – 2019/12 Projects 2022/01 – 2022/11 Skills Spring Boot Docker python IT Supervisor NextGen Information Research, identify and appraise emerging technologies, hardware, and software to provide strategic recommendations for continuous improvements IT Specialist INITAR Inc. Oversaw more than 200 computers of the company by monitoring, configuring, and maintaining all hardware and software systems",
-    };
-    await axios.post("http://localhost:8082/test", json);
-    //-----------------
+    // //---------DELETE----------------
+    // const json = {
+    //   id: nextFile.id.toString(),
+    //   text: "Johnnie Ramos johnnie.ramos@gmail.com 708-678-627 Warsaw, Poland, Education 2015/10 – 2020/05 London, UK Languages Polish C2 A-Level Degree Abbey DLD College London Spanish B1 Certificates Certified Customer Service Professional (CCSP) 2016/10 Professional Experience 2020/01 – present 2019/08 – 2019/12 Projects 2022/01 – 2022/11 Skills Spring Boot Docker python IT Supervisor NextGen Information Research, identify and appraise emerging technologies, hardware, and software to provide strategic recommendations for continuous improvements IT Specialist INITAR Inc. Oversaw more than 200 computers of the company by monitoring, configuring, and maintaining all hardware and software systems",
+    // };
+    // await axios.post("http://localhost:8082/test", json);
+    // //-----------------
     const response = await axios.get(
       `http://localhost:8082/cleaned?item_uuid=${nextFile.id}`
     );
@@ -85,11 +85,24 @@ export function ProcessButton({ activeFile }) {
       });
     }
   }
+  async function postCleanedData() {
+    const body = {
+      id: activeFile.id,
+      name: activeFile.fields.name.map((field) => field.value),
+      address: activeFile.fields.address.map((field) => field.value),
+      phone: activeFile.fields.phone.map((field) => field.value),
+      url: activeFile.fields.website.map((field) => field.value),
+      email: activeFile.fields.email.map((field) => field.value),
+      other: activeFile.fields.other.map((field) => field.value),
+    };
+    const response = await axios.post("http://localhost:8082/upload", body);
+  }
 
   return (
     <div className="flex flex-col items-center justify-center w-full px-20">
       <button
         onClick={() => {
+          postCleanedData();
           handleNextItem();
           setFetchingData(true);
         }}

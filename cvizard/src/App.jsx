@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, createContext } from "react";
-import JSZip, { forEach } from "jszip";
+import JSZip, { file, forEach } from "jszip";
 import { Element, scroller } from "react-scroll";
 import { PdfUploader } from "./containers/PdfUploader";
 import { DataForm } from "./containers/DataForm";
@@ -14,7 +14,7 @@ export default function App() {
     if (localValue == null) return [];
     return JSON.parse(localValue);
   });
-  const [fetchingData, setFetchingData] = useState(false); //TODO wyjebac do dataForm
+  const [fetchingData, setFetchingData] = useState(true); //TODO wyjebac do dataForm
 
   // useEffect(() => {
   //   localStorage.setItem("ITEMS", JSON.stringify(files));
@@ -81,10 +81,11 @@ export default function App() {
     });
   }
   function toggleActive(id) {
+    console.log("toggleActive called", files);
     setFiles((currentFiles) => {
       return currentFiles.map((file) =>
         file.id === id
-          ? { ...file, isActive: !file.isActive }
+          ? { ...file, isActive: true } //TODO zmienic na !file.isActive
           : { ...file, isActive: false }
       );
     });
@@ -98,15 +99,16 @@ export default function App() {
 
   //TODO duplicate
   async function handleNextItem() {
+    console.log("handleNextItem called");
     const nextFile = files[0];
     toggleActive(nextFile.id);
-    //---------DELETE----------------
-    const json = {
-      id: nextFile.id.toString(),
-      text: "Johnnie Ramos johnnie.ramos@gmail.com 708-678-627 Warsaw, Poland, Education 2015/10 – 2020/05 London, UK Languages Polish C2 A-Level Degree Abbey DLD College London Spanish B1 Certificates Certified Customer Service Professional (CCSP) 2016/10 Professional Experience 2020/01 – present 2019/08 – 2019/12 Projects 2022/01 – 2022/11 Skills Spring Boot Docker python IT Supervisor NextGen Information Research, identify and appraise emerging technologies, hardware, and software to provide strategic recommendations for continuous improvements IT Specialist INITAR Inc. Oversaw more than 200 computers of the company by monitoring, configuring, and maintaining all hardware and software systems",
-    };
-    await axios.post("http://localhost:8082/test", json);
-    //-----------------
+    // //---------DELETE----------------
+    // const json = {
+    //   id: nextFile.id.toString(),
+    //   text: "Johnnie Ramos johnnie.ramos@gmail.com 708-678-627 Warsaw, Poland, Education 2015/10 – 2020/05 London, UK Languages Polish C2 A-Level Degree Abbey DLD College London Spanish B1 Certificates Certified Customer Service Professional (CCSP) 2016/10 Professional Experience 2020/01 – present 2019/08 – 2019/12 Projects 2022/01 – 2022/11 Skills Spring Boot Docker python IT Supervisor NextGen Information Research, identify and appraise emerging technologies, hardware, and software to provide strategic recommendations for continuous improvements IT Specialist INITAR Inc. Oversaw more than 200 computers of the company by monitoring, configuring, and maintaining all hardware and software systems",
+    // };
+    // await axios.post("http://localhost:8082/test", json);
+    // //-----------------
     const response = await axios.get(
       `http://localhost:8082/cleaned?item_uuid=${nextFile.id}`
     );
@@ -148,7 +150,9 @@ export default function App() {
   useEffect(() => {
     if (allFilesUploaded) {
       toggleActive(files[0].id);
+      console.log(files[0]);
       handleNextItem();
+      console.log("allFilesUploaded");
       scroller.scrollTo("DataFormElement", {
         duration: 800,
         delay: 0,
