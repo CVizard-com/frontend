@@ -1,94 +1,24 @@
-import { useState, useEffect, useRef } from "react";
-
-import { AddFileButton } from "./AddFileButton";
-import FileSaver from "file-saver";
-import { Baner } from "./Baner";
-import { PdfFileList } from "./PdfFileList";
-import { TransferButton } from "./TransferButton";
-import JSZip, { forEach } from "jszip";
+import { useState, useEffect, useRef, createContext } from "react";
+import JSZip, { file, forEach } from "jszip";
+import { Element, scroller } from "react-scroll";
+import { PdfUploader } from "./containers/PdfUploader";
+import { DataForm } from "./containers/DataForm";
+import { TemplateSelector } from "./containers/TemplateSelector";
 import axios from "axios";
-import axiosRetry from "axios-retry";
 
-axiosRetry(axios, {
-  retries: 300,
-  retryDelay: (retryCount) => {
-    return retryCount * 2000;
-  },
-  retryCondition: (error) => {
-    return error.response.status !== 200;
-  },
-});
-
+export const FilesContext = createContext();
+export const FetchingContext = createContext();
 export default function App() {
   const [files, setFiles] = useState(() => {
     const localValue = localStorage.getItem("ITEMS");
     if (localValue == null) return [];
     return JSON.parse(localValue);
   });
+  const [fetchingData, setFetchingData] = useState(true); //TODO wyjebac do dataForm
 
-  useEffect(() => {
-    localStorage.setItem("ITEMS", JSON.stringify(files));
-  }, [files]);
-
-  const updateFileStatus = (id, newStatus) => {
-    setFiles((currentFiles) => {
-      return currentFiles.map((file) =>
-        file.id === id ? { ...file, status: newStatus } : file
-      );
-    });
-  };
-
-  function addFile(acceptedFiles) {
-    acceptedFiles.forEach((file) => {
-      const reader = new FileReader();
-
-      reader.onload = (e) => {
-        setFiles((currentFiles) => {
-          return [
-            ...currentFiles,
-            {
-              id: crypto.randomUUID(),
-              name: file.name,
-              status: "Pending",
-              file: file,
-            },
-          ];
-        });
-      };
-      reader.readAsDataURL(file);
-    });
-  }
-
-  function deleteFile(id) {
-    setFiles((currentFiles) => {
-      return currentFiles.filter((file) => file.id !== id);
-    });
-  }
-
-  function uploadFile({ file }) {
-    return new Promise(async (resolve, reject) => {
-      try {
-        updateFileStatus(file.id, "Uploading");
-
-        const formData = new FormData();
-        formData.append("pdf_file", file.file);
-        formData.append("id", file.id);
-
-        const response = await axios.post(
-          `https://cvizard.com:8443/api/reader`,
-          formData
-        );
-        if (response.status === 200) {
-          updateFileStatus(file.id, "Processing");
-          resolve(file);
-        } else {
-          reject(new Error("File upload failed"));
-        }
-      } catch (error) {
-        reject(error);
-      }
-    });
-  }
+  // useEffect(() => {
+  //   localStorage.setItem("ITEMS", JSON.stringify(files));
+  // }, [files]);
 
   function processFile({ file }) {
     return new Promise(async (resolve, reject) => {
@@ -107,24 +37,6 @@ export default function App() {
         reject(error);
       }
     });
-  }
-
-  async function uploadFiles() {
-    const uploadPromises = files.map((file) => {
-      if (file.status !== "Pending") return Promise.resolve();
-      return uploadFile({ file });
-    });
-
-    const processPromises = files.map((file) => {
-      return processFile({ file });
-    });
-
-    try {
-      await Promise.all(uploadPromises);
-      await Promise.all(processPromises);
-    } catch (error) {
-      console.error("Error while uploading files", error);
-    }
   }
 
   function fetchFile({ file }) {
@@ -146,53 +58,123 @@ export default function App() {
     });
   }
 
-  async function downloadFilesZip() {
-    const myZip = new JSZip();
-    const downloadPromises = files.map(async (file) => {
-      const content = await fetchFile({ file });
-      myZip.file(file.name, content);
+  function changeStatusAll(status) {
+    setFiles((currentFiles) => {
+      return currentFiles.map((file) => {
+        return { ...file, status };
+      });
     });
-
-    try {
-      await Promise.all(downloadPromises);
-      const zipContent = await myZip.generateAsync({ type: "blob" });
-      saveAs(zipContent, "cvizard.zip");
-    } catch (error) {
-      console.error("Error while downloading files", error);
-    }
   }
 
+  function toggleActive(id) {
+    console.log("toggleActive called", files);
+    setFiles((currentFiles) => {
+      return currentFiles.map((file) =>
+        file.id === id
+          ? { ...file, isActive: true } //TODO zmienic na !file.isActive
+          : { ...file, isActive: false }
+      );
+    });
+  }
+
+  const allFilesUploaded =
+    files.every((file) => file.status === "Uploaded") && files.length > 0;
+
   const allFilesAreDone =
-    files.every((file) => file.status === "Download") && files.length > 0;
-  const someFilesPending =
-    files.some((file) => file.status !== "Download") && files.length > 0;
+    files.every((file) => file.status === "Processing") && files.length > 0;
+
+  const someFilesAreUploaded =
+    files.some((file) => file.status === "Uploaded") && files.length > 0;
+
+  //TODO duplicate
+  async function handleNextItem() {
+    console.log("handleNextItem called");
+    const nextFile = files[0];
+    toggleActive(nextFile.id);
+    // //---------DELETE----------------
+    // const json = {
+    //   id: nextFile.id.toString(),
+    //   text: "Johnnie Ramos johnnie.ramos@gmail.com 708-678-627 Warsaw, Poland, Education 2015/10 – 2020/05 London, UK Languages Polish C2 A-Level Degree Abbey DLD College London Spanish B1 Certificates Certified Customer Service Professional (CCSP) 2016/10 Professional Experience 2020/01 – present 2019/08 – 2019/12 Projects 2022/01 – 2022/11 Skills Spring Boot Docker python IT Supervisor NextGen Information Research, identify and appraise emerging technologies, hardware, and software to provide strategic recommendations for continuous improvements IT Specialist INITAR Inc. Oversaw more than 200 computers of the company by monitoring, configuring, and maintaining all hardware and software systems",
+    // };
+    // await axios.post("https://cvizard.com:8443/api/cleaner/test", json);
+    // //-----------------
+    const response = await axios.get(
+      `https://cvizard.com:8443/api/cleaner/cleaned?item_uuid=${nextFile.id}`
+    );
+    if (response.status === 200) {
+      setFiles((currentFiles) => {
+        return currentFiles.map((file) => {
+          setFetchingData(false);
+          if (file.id === response.data.id) {
+            return {
+              ...file,
+              fields: {
+                ["name"]: response.data.name.map((field) => {
+                  return { id: crypto.randomUUID(), value: field };
+                }),
+                ["address"]: response.data.address.map((field) => {
+                  return { id: crypto.randomUUID(), value: field };
+                }),
+                ["phone"]: response.data.phone.map((field) => {
+                  return { id: crypto.randomUUID(), value: field };
+                }),
+                ["website"]: response.data.url.map((field) => {
+                  return { id: crypto.randomUUID(), value: field };
+                }),
+                ["email"]: response.data.email.map((field) => {
+                  return { id: crypto.randomUUID(), value: field };
+                }),
+                ["other"]: response.data.other.map((field) => {
+                  return { id: crypto.randomUUID(), value: field };
+                }),
+              },
+            };
+          } else {
+            return file;
+          }
+        });
+      });
+    }
+  }
+  useEffect(() => {
+    if (allFilesUploaded) {
+      toggleActive(files[0].id);
+      console.log(files[0]);
+      handleNextItem();
+      console.log("allFilesUploaded");
+      scroller.scrollTo("DataFormElement", {
+        duration: 800,
+        delay: 0,
+        smooth: "easeInOutQuart",
+      });
+    }
+  }, [allFilesUploaded]);
+
+  useEffect(() => {
+    if (allFilesAreDone) {
+      scroller.scrollTo("TemplateSelectorElement", {
+        duration: 800,
+        delay: 0,
+        smooth: "easeInOutQuart",
+      });
+    }
+  }, [allFilesAreDone]);
 
   return (
-    <section className="flex items-center justify-center min-h-screen w-full bg-white">
-      <div className="mx-auto max-w-[43rem]">
-        <Baner />
-        <PdfFileList
-          files={files}
-          addFile={addFile}
-          deleteFile={deleteFile}
-          uploadFile={uploadFile}
-          fetchFile={fetchFile}
-        />
-
-        <AddFileButton addFile={addFile} />
-
-        <div className="flex items-center justify-center">
-          {someFilesPending && (
-            <TransferButton label="Upload files" transferFiles={uploadFiles} />
-          )}
-          {allFilesAreDone && (
-            <TransferButton
-              label="Download files"
-              transferFiles={downloadFilesZip}
-            />
-          )}
-        </div>
-      </div>
-    </section>
+    <FetchingContext.Provider value={{ fetchingData, setFetchingData }}>
+      <FilesContext.Provider value={{ files, setFiles }}>
+        <PdfUploader allFilesUploaded={allFilesUploaded} />
+        {someFilesAreUploaded && (
+          <Element name="DataFormElement">
+            <DataForm />
+          </Element>
+        )}
+        {allFilesAreDone && (
+          <Element name="TemplateSelectorElement">
+            <TemplateSelector />
+          </Element>
+        )}
+      </FilesContext.Provider>
+    </FetchingContext.Provider>
   );
 }
