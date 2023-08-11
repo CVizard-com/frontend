@@ -121,7 +121,7 @@ export function ProcessButton({ activeFile }) {
         className="flex flex-wrap items-center w-full justify-center w-36 mx-auto rounded-lg bg-cyan-500 py-2 text-white transition-colors hover:bg-cyan-600 my-2 mx-10"
       >
         {/* <img src="../../images/process.png " className="w-5 mx-4" /> */}
-        Process
+        //TODO add image Process
       </button>
     </div>
   );

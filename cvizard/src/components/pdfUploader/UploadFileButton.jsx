@@ -3,7 +3,7 @@ import { FilesContext } from "../../App";
 
 import axios from "axios";
 import axiosRetry from "axios-retry";
-
+import uploadFileIcon from "../../images/uploadFileIcon.png";
 axiosRetry(axios, {
   retries: 5,
   retryDelay: (retryCount) => {
@@ -79,7 +79,7 @@ export function UploadFileButton() {
       onClick={uploadFiles}
       className="flex flex-wrap items-center justify-center w-36 h-10 mx-auto rounded-lg bg-cyan-500 py-2 text-white transition-colors hover:bg-cyan-600 my-2"
     >
-      <img src="src/images/uploadFileIcon.png " className="w-6 mx-1" />
+      <img src={uploadFileIcon} className="w-6 mx-1" />
       Upload files
     </button>
   );

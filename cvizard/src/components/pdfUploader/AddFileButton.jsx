@@ -1,5 +1,6 @@
 import React, { useRef, useContext } from "react";
 import { FilesContext } from "../../App";
+import addFileIcon from "../../images/addFileIcon.png";
 
 export function AddFileButton() {
   const { files, setFiles } = useContext(FilesContext);
@@ -51,7 +52,7 @@ export function AddFileButton() {
             : "bg-cyan-500 hover:bg-cyan-600"
         }`}
       >
-        <img src="src/images/addFileIcon.png" className="w-6 mx-1" />
+        <img src={addFileIcon} className="w-6 mx-1" />
         Add files
       </button>
       <input

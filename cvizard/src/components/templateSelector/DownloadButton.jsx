@@ -4,7 +4,7 @@ import { FilesContext } from "../../App";
 import { useContext } from "react";
 import { saveAs } from "file-saver";
 import axiosRetry from "axios-retry";
-
+import downloadFile from "../../images/downloadFile.png";
 axiosRetry(axios, {
   retries: 50,
   retryDelay: (retryCount) => {
@@ -67,7 +67,7 @@ export function DownloadButton() {
         onClick={() => downloadFilesZip()}
         className="flex flex-wrap items-center justify-center w-36 h-10 mx-auto rounded-lg bg-cyan-500 py-2 text-white transition-colors hover:bg-cyan-600 mt-12"
       >
-        <img src="src/images/downloadFile.png " className="w-6 mx-1" />
+        <img src={downloadFile} className="w-6 mx-1" />
         Download files
       </button>
     </>

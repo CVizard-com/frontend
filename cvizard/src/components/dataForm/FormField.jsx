@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { FilesContext } from "../../App";
-
+import trashBin from "../../images/thrashBin.png";
 export function FormField({ file, field, fieldName }) {
   const { files, setFiles } = useContext(FilesContext);
 
@@ -58,7 +58,7 @@ export function FormField({ file, field, fieldName }) {
         onBlur={(e) => changeValue(e.target.value)}
       />
       <button onClick={() => deleteField()}>
-        <img src="src/images/thrashBin.png" className="w-4" />
+        <img src={trashBin} className="w-4" />
       </button>
     </li>
   );

@@ -4,7 +4,7 @@ import { PdfPreviewComponent } from "../components/dataForm/PdfPreviewComponent"
 import { createContext, useContext, useEffect, useState } from "react";
 import { Form } from "../components/dataForm/Form";
 import { FetchingContext, FilesContext } from "../App";
-
+import loading from "../images/loading.gif";
 // export const FetchingContext = createContext();
 
 export function DataForm() {
@@ -30,11 +30,7 @@ export function DataForm() {
             </div>
             {fetchingData && (
               <div className="absolute top-0 flex items-center justify-center min-h-full w-full z-50">
-                <img
-                  src="src/images/loading.gif"
-                  alt="loading"
-                  className="w-20"
-                />
+                <img src={loading} alt="loading" className="w-20" />
               </div>
             )}
           </div>

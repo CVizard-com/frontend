@@ -1,7 +1,7 @@
 import { FormField } from "./FormField";
 import React, { useContext } from "react";
 import { FilesContext } from "../../App";
-
+import plus from "../../images/plus.png";
 export function FormList({ fieldName, file }) {
   // const { formData, setFormData } = useContext(FormContext);
   const { files, setFiles } = useContext(FilesContext);
@@ -56,7 +56,7 @@ export function FormList({ fieldName, file }) {
           className="bg-white h-8 absolute bottom-0 flex items-center w-full px-8 text-left text-slate-400 hover:bg-slate-100 border-t-2 border-slate-300"
           onClick={() => addField()}
         >
-          <img src="src/images/plus.png" className="w-4 mx-2" />
+          <img src={plus} className="w-4 mx-2" />
           Add field
         </button>
       </div>
