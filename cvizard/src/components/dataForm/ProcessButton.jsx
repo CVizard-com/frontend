@@ -107,14 +107,14 @@ export function ProcessButton({ activeFile }) {
     await axios.post("https://cvizard.com:8443/api/cleaner/upload", body);
     updateFileStatus(activeFile.id, "Processing");
   }
-
+  //TODO if file is last, then skip handleNextItem
   return (
     <div className="flex flex-col items-center justify-center w-full px-20">
       <button
         onClick={() => {
           postCleanedData();
           if (activeFile !== files[files.length - 1]) {
-            handleNextItem(); //TODO if file is last, then skip handleNextItem
+            handleNextItem();
             setFetchingData(true);
           }
         }}
