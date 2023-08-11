@@ -4,8 +4,9 @@ import template1 from "../../images/templates/template1.png";
 import template2 from "../../images/templates/template2.png";
 import template3 from "../../images/templates/template3.png";
 import template4 from "../../images/templates/template4.png";
-const templates = [template1, template2, template3, template4];
+
 export function Template({ template }) {
+  const templatesIcons = [template1, template2, template3, template4];
   const { templates, setTemplates } = useContext(TemplateContext);
 
   const selectTemplateRef = useRef();
@@ -29,7 +30,7 @@ export function Template({ template }) {
       > */}
       <img
         // src={`src/images/templates/template${template.id}.png`}
-        src={templates[template.id - 1]}
+        src={templatesIcons[template.id - 1]}
         alt="template image"
         className={`${
           template.isActive ? "border-8 border-cyan-500" : "border-slate-300"
