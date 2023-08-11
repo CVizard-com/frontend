@@ -58,7 +58,7 @@ export function FormField({ file, field, fieldName }) {
         onBlur={(e) => changeValue(e.target.value)}
       />
       <button onClick={() => deleteField()}>
-        <img src="../images/thrashBin.png" className="w-4" />
+        <img src="src/images/thrashBin.png" className="w-4" />
       </button>
     </li>
   );
