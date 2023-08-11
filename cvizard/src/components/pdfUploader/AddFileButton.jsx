@@ -51,7 +51,7 @@ export function AddFileButton() {
             : "bg-cyan-500 hover:bg-cyan-600"
         }`}
       >
-        <img src="../images/addFileIcon.png" className="w-6 mx-1" />
+        <img src="src/images/addFileIcon.png" className="w-6 mx-1" />
         Add files
       </button>
       <input
