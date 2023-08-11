@@ -66,7 +66,7 @@ export function DraggableDropZone() {
     right: 0,
     bottom: 0,
     zIndex: 200,
-    backgroundColor: isDragActive ? "rgba(0, 0, 0, 0.5)" : "transparent",
+    backgroundColor: isDragActive ? "rgba(0, 0, 0, 0.3)" : "transparent",
   };
 
   return (
@@ -79,7 +79,7 @@ export function DraggableDropZone() {
     >
       <input {...getInputProps()} />
       {isDragActive && (
-        <div className="flex items-center justify-center w-full h-full mx-auto text-[3.5rem] font-bold leading-[4rem] tracking-tight text-cyan-500">
+        <div className="flex items-center justify-center w-full h-full mx-auto text-[3.5rem] font-bold leading-[4rem] tracking-tight text-white">
           <h1>Drop files anywhere</h1>
         </div>
       )}

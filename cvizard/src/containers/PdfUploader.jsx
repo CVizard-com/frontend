@@ -9,7 +9,7 @@ export const DragContext = createContext();
 
 export function PdfUploader({ allFilesUploaded }) {
   const { files, setFiles } = useContext(FilesContext);
-  const { isDragActive, setIsDragActive } = useState(false);
+  const [isDragActive, setIsDragActive] = useState(false);
 
   useEffect(() => {
     const handleDragOver = (e) => {
