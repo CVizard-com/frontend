@@ -30,11 +30,7 @@ export function DataForm() {
             </div>
             {fetchingData && (
               <div className="absolute top-0 flex items-center justify-center min-h-full w-full z-50">
-                <img
-                  src="../images/loading.gif"
-                  alt="loading"
-                  className="w-20"
-                />
+                <img src="images/loading.gif" alt="loading" className="w-20" />
               </div>
             )}
           </div>

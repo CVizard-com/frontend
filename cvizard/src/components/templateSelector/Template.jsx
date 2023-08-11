@@ -24,7 +24,7 @@ export function Template({ template }) {
         } shrink-0 h-96 w-72 rounded-lg border-2 mx-12`}
       > */}
       <img
-        src={`../../images/templates/template${template.id}.png`}
+        src={`../images/templates/template${template.id}.png`}
         alt="template image"
         className={`${
           template.isActive ? "border-8 border-cyan-500" : "border-slate-300"
