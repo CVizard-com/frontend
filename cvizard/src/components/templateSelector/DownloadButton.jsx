@@ -60,11 +60,21 @@ export function DownloadButton() {
       console.error("Error while downloading files", error);
     }
   }
+  function changeStatusAll(status) {
+    setFiles((currentFiles) => {
+      return currentFiles.map((file) => {
+        return { ...file, status };
+      });
+    });
+  }
 
   return (
     <>
       <button
-        onClick={() => downloadFilesZip()}
+        onClick={() => {
+          changeStatusAll("Almost done");
+          downloadFilesZip();
+        }}
         className="flex flex-wrap items-center justify-center w-36 h-10 mx-auto rounded-lg bg-cyan-500 py-2 text-white transition-colors hover:bg-cyan-600 mt-12"
       >
         <img src={downloadFile} className="w-6 mx-1" />
