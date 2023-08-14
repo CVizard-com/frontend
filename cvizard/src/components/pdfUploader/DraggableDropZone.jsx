@@ -10,6 +10,13 @@ export function DraggableDropZone() {
   const onDragLeave = (e) => {
     setIsDragActive(false);
   };
+  // const onDragOver = (e) => {
+  //   e.preventDefault();
+  //   if (e.dataTransfer.items && e.dataTransfer.items[0].kind !== "file") {
+  //     e.dataTransfer.dropEffect = "none"; // cancel the drag event
+  //     // setIsDragActive(false);
+  //   }
+  // };
 
   function addFile(event) {
     const acceptedFiles = event.target.files;
@@ -58,6 +65,9 @@ export function DraggableDropZone() {
     onDrop: onDrop,
     onDragEnter: onDragEnter,
     onDragLeave: onDragLeave,
+    // onDragOver: onDragOver,
+    accept: { "application/pdf": [".pdf"] },
+    type: file,
   });
   let style = {
     position: "fixed",

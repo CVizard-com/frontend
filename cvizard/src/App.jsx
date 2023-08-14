@@ -8,6 +8,7 @@ import axios from "axios";
 
 export const FilesContext = createContext();
 export const FetchingContext = createContext();
+export const SiteStatusContext = createContext();
 export default function App() {
   const [files, setFiles] = useState(() => {
     const localValue = localStorage.getItem("ITEMS");
@@ -15,6 +16,9 @@ export default function App() {
     return JSON.parse(localValue);
   });
   const [fetchingData, setFetchingData] = useState(true); //TODO wyjebac do dataForm
+  const [siteStatus, setSiteStatus] = useState(
+    "Drag and drop files or click the button below to add files"
+  );
 
   // useEffect(() => {
   //   localStorage.setItem("ITEMS", JSON.stringify(files));
@@ -67,7 +71,6 @@ export default function App() {
   }
 
   function toggleActive(id) {
-    console.log("toggleActive called", files);
     setFiles((currentFiles) => {
       return currentFiles.map((file) =>
         file.id === id
@@ -88,7 +91,6 @@ export default function App() {
 
   //TODO duplicate
   async function handleNextItem() {
-    console.log("handleNextItem called");
     const nextFile = files[0];
     toggleActive(nextFile.id);
     // //---------DELETE----------------
@@ -105,6 +107,7 @@ export default function App() {
       setFiles((currentFiles) => {
         return currentFiles.map((file) => {
           setFetchingData(false);
+
           if (file.id === response.data.id) {
             return {
               ...file,
@@ -139,9 +142,9 @@ export default function App() {
   useEffect(() => {
     if (allFilesUploaded) {
       toggleActive(files[0].id);
-      console.log(files[0]);
+
       handleNextItem();
-      console.log("allFilesUploaded");
+
       scroller.scrollTo("DataFormElement", {
         duration: 800,
         delay: 0,
