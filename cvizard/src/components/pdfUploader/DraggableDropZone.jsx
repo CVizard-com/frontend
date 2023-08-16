@@ -58,6 +58,7 @@ export function DraggableDropZone() {
     onDrop: onDrop,
     onDragEnter: onDragEnter,
     onDragLeave: onDragLeave,
+    accept: "application/pdf",
   });
   let style = {
     position: "fixed",
