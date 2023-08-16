@@ -7,17 +7,6 @@ export function DraggableDropZone() {
   const { isDragActive, setIsDragActive } = useContext(DragContext);
   const { file, setFiles } = useContext(FilesContext);
 
-  const onDragLeave = (e) => {
-    setIsDragActive(false);
-  };
-  // const onDragOver = (e) => {
-  //   e.preventDefault();
-  //   if (e.dataTransfer.items && e.dataTransfer.items[0].kind !== "file") {
-  //     e.dataTransfer.dropEffect = "none"; // cancel the drag event
-  //     // setIsDragActive(false);
-  //   }
-  // };
-
   function addFile(event) {
     const acceptedFiles = event.target.files;
     Array.from(acceptedFiles).forEach((file) => {
@@ -61,10 +50,26 @@ export function DraggableDropZone() {
     setIsDragActive(true);
   };
 
+  const onDragLeave = (e) => {
+    setIsDragActive(false);
+  };
+
+  const onDragEnd = (e) => {
+    setIsDragActive(false);
+  };
+  // const onDragOver = (e) => {
+  //   e.preventDefault();
+  //   if (e.dataTransfer.items && e.dataTransfer.items[0].kind !== "file") {
+  //     e.dataTransfer.dropEffect = "none"; // cancel the drag event
+  //     // setIsDragActive(false);
+  //   }
+  // };
+
   const { getRootProps, getInputProps } = useDropzone({
     onDrop: onDrop,
     onDragEnter: onDragEnter,
     onDragLeave: onDragLeave,
+    onDragEnd: onDragEnd,
     // onDragOver: onDragOver,
     accept: { "application/pdf": [".pdf"] },
     type: file,
