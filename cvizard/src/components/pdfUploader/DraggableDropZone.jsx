@@ -57,13 +57,6 @@ export function DraggableDropZone() {
   const onDragEnd = (e) => {
     setIsDragActive(false);
   };
-  // const onDragOver = (e) => {
-  //   e.preventDefault();
-  //   if (e.dataTransfer.items && e.dataTransfer.items[0].kind !== "file") {
-  //     e.dataTransfer.dropEffect = "none"; // cancel the drag event
-  //     // setIsDragActive(false);
-  //   }
-  // };
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop: onDrop,
