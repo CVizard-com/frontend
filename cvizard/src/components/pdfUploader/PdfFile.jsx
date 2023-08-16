@@ -90,9 +90,11 @@ export function PdfFile({ file }) {
               : file.status === "Uploading"
               ? "text-yellow-500"
               : file.status === "Processing"
-              ? "text-blue-500"
-              : file.status === "Download"
-              ? "border border-lime-500 text-lime-500 hover:bg-lime-100"
+              ? "text-sky-500"
+              : file.status === "Almost done"
+              ? "text-violet-500"
+              : file.status === "Done"
+              ? "text-lime-500"
               : ""
           }`}
           onClick={() => downloadOneFile({ file, fetchFile })}
