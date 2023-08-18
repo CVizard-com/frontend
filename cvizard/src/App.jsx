@@ -28,7 +28,7 @@ export default function App() {
     return new Promise(async (resolve, reject) => {
       try {
         const response = await axios.get(
-          `https://cvizard.com:8443/api/maker/download?key=${file.id}`
+          `https://localhost:8443/api/maker/download?key=${file.id}`
         );
 
         if (response.status === 200) {
@@ -47,7 +47,7 @@ export default function App() {
     return new Promise(async (resolve, reject) => {
       try {
         const response = await axios.get(
-          `https://cvizard.com:8443/api/maker/download?key=${file.id}`,
+          `https://localhost:8443/api/maker/download?key=${file.id}`,
           { responseType: "arraybuffer" }
         );
 
@@ -98,10 +98,10 @@ export default function App() {
     //   id: nextFile.id.toString(),
     //   text: "Johnnie Ramos johnnie.ramos@gmail.com 708-678-627 Warsaw, Poland, Education 2015/10 – 2020/05 London, UK Languages Polish C2 A-Level Degree Abbey DLD College London Spanish B1 Certificates Certified Customer Service Professional (CCSP) 2016/10 Professional Experience 2020/01 – present 2019/08 – 2019/12 Projects 2022/01 – 2022/11 Skills Spring Boot Docker python IT Supervisor NextGen Information Research, identify and appraise emerging technologies, hardware, and software to provide strategic recommendations for continuous improvements IT Specialist INITAR Inc. Oversaw more than 200 computers of the company by monitoring, configuring, and maintaining all hardware and software systems",
     // };
-    // await axios.post("https://cvizard.com:8443/api/cleaner/test", json);
+    // await axios.post("https://localhost:8443/api/cleaner/test", json);
     // //-----------------
     const response = await axios.get(
-      `https://cvizard.com:8443/api/cleaner/cleaned?item_uuid=${nextFile.id}`
+      `https://localhost:8443/api/cleaner/cleaned?item_uuid=${nextFile.id}`
     );
     if (response.status === 200) {
       setFiles((currentFiles) => {
