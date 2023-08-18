@@ -6,7 +6,7 @@ import { saveAs } from "file-saver";
 import axiosRetry from "axios-retry";
 import downloadFile from "../../images/downloadFile.png";
 axiosRetry(axios, {
-  retries: 50,
+  retries: 5000,
   retryDelay: (retryCount) => {
     return retryCount * 3000;
   },
