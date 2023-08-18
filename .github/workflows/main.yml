@@ -38,7 +38,7 @@ jobs:
       - name: Login to Docker Registry
         uses: docker/login-action@v1
         with:
-          registry: https://localhost:5001
+          registry: https://cvizard.com:5001
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
@@ -47,7 +47,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: localhost:5001/frontend:${{ github.sha }}
+          tags: cvizard.com:5001/frontend:${{ github.sha }}
   deploy:
     runs-on: ubuntu-latest
     needs: ["docker_build_and_push"]
@@ -61,7 +61,7 @@ jobs:
       #       - name: Login to Docker Registry
       #         uses: docker/login-action@v1
       #         with:
-      #           registry: https://localhost:5000/registry
+      #           registry: https://cvizard.com:5000/registry
       #           username: ${{ secrets.DOCKER_USERNAME }}
       #           password: ${{ secrets.DOCKER_PASSWORD }}
 
@@ -72,6 +72,6 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            docker login localhost:5000 -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-            sed -i 's|localhost:5001/frontend:.*|localhost:5001/frontend:${{ github.sha }}|' CVizard/docker-compose.yml
+            docker login cvizard.com:5000 -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+            sed -i 's|cvizard.com:5001/frontend:.*|cvizard.com:5001/frontend:${{ github.sha }}|' CVizard/docker-compose.yml
             cd CVizard && docker compose stop frontend && docker compose build frontend && docker compose up -d frontend
