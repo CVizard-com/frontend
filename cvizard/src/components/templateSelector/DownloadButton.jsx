@@ -30,7 +30,7 @@ export function DownloadButton() {
     return new Promise(async (resolve, reject) => {
       try {
         const response = await axios.get(
-          `https://localhost:8443/api/maker/download?key=${file.id}`,
+          `https://cvizard.com:8443/api/maker/download?key=${file.id}`,
           { responseType: "arraybuffer" }
         );
 
