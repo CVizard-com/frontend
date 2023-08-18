@@ -58,7 +58,7 @@ export function ProcessButton({ activeFile }) {
     // await axios.post("http://localhost:8082/test", json);
     // //-----------------
     const response = await axios.get(
-      `https://cvizard.com:8080/api/cleaner/cleaned?item_uuid=${nextFile.id}`
+      `https://cvizard.com:8443/api/cleaner/cleaned?item_uuid=${nextFile.id}`
     );
     if (response.status === 200) {
       setFiles((currentFiles) => {
@@ -105,7 +105,7 @@ export function ProcessButton({ activeFile }) {
       email: activeFile.fields.email.map((field) => field.value),
       other: activeFile.fields.other.map((field) => field.value),
     };
-    await axios.post("https://cvizard.com:8080/api/cleaner/upload", body);
+    await axios.post("https://cvizard.com:8443/api/cleaner/upload", body);
     updateFileStatus(activeFile.id, "Processing");
   }
   //TODO if file is last, then skip handleNextItem

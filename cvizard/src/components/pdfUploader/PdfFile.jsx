@@ -50,7 +50,7 @@ export function PdfFile({ file }) {
     return new Promise(async (resolve, reject) => {
       try {
         const response = await axios.get(
-          `https://cvizard.com:8080/api/maker/download?key=${file.id}`,
+          `https://cvizard.com:8443/api/maker/download?key=${file.id}`,
           { responseType: "arraybuffer" }
         );
 
