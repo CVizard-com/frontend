@@ -3,10 +3,7 @@ import { FilesContext } from "../../App";
 
 export function PdfUploaderBaner() {
   const { files, setFiles } = useContext(FilesContext);
-  console.log(files);
-  useEffect(() => {
-    console.log("ue", files);
-  }, [files]);
+  useEffect(() => {}, [files]);
 
   const isFilesUploaded = files.some((file) => file.status === "Uploaded");
   const isFilesProcessing = files.some((file) => file.status === "Processing");
