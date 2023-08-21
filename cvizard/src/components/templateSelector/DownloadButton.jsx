@@ -5,6 +5,8 @@ import { useContext } from "react";
 import { saveAs } from "file-saver";
 import axiosRetry from "axios-retry";
 import downloadFile from "../../images/downloadFile.png";
+import { TemplateContext } from "../../containers/TemplateSelector";
+
 axiosRetry(axios, {
   retries: 5000,
   retryDelay: (retryCount) => {
@@ -16,7 +18,9 @@ axiosRetry(axios, {
 });
 
 export function DownloadButton() {
+  const { templates, setTemplates } = useContext(TemplateContext);
   const { files, setFiles } = useContext(FilesContext);
+  const template = templates.find((template) => template.isActive);
   //-----------------DELETE----------------- duplicate
   const updateFileStatus = (id, newStatus) => {
     setFiles((currentFiles) => {
@@ -30,7 +34,7 @@ export function DownloadButton() {
     return new Promise(async (resolve, reject) => {
       try {
         const response = await axios.get(
-          `https://cvizard.com:8443/api/maker/download?key=${file.id}`,
+          `https://cvizard.com:8443/api/maker/download/${template.label}?key=${file.id}`,
           { responseType: "arraybuffer" }
         );
 

@@ -28,15 +28,22 @@ export function Template({ template }) {
           template.isActive ? "border-8 border-cyan-500" : "border-slate-300"
         } shrink-0 h-96 w-72 rounded-lg border-2 mx-12`}
       > */}
-      <img
-        // src={`src/images/templates/template${template.id}.png`}
+      {/* <img
         src={templatesIcons[template.id - 1]}
         alt="template image"
         className={`${
           template.isActive ? "border-8 border-cyan-500" : "border-slate-300"
         } shrink-0 h-96 w-72 rounded-lg border-2 mx-12`}
         onClick={() => selectTemplateRef.current.click()}
-      />
+      /> */}
+      <button
+        onClick={() => toggleActiveTemplate(template.id)}
+        className={`${
+          template.isActive ? "border-8 border-cyan-500" : "border-slate-300"
+        } shrink-0 h-96 w-72 rounded-lg border-2 mx-12`}
+      >
+        {template.label}
+      </button>
       <button
         onClick={() => toggleActiveTemplate(template.id)}
         className="hidden"
