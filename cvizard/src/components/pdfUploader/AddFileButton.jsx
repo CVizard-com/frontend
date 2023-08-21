@@ -44,7 +44,7 @@ export function AddFileButton() {
         type="file"
         onClick={() => fileInputRef.current.click()}
         disabled={allFilesUploaded}
-        accept="application/pdf"
+        accept={("application/pdf", "docx")}
         className={`flex flex-wrap items-center justify-center w-36 h-10 mx-auto rounded-lg text-white transition-colors py-2 my-2
         ${
           allFilesUploaded
