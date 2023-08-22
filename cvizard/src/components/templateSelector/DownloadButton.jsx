@@ -54,13 +54,8 @@ export function DownloadButton() {
     return files.findIndex((file) => file.fileName === fileName);
   }
 
-  // function findFileIndex(id) {
-  //   return files.findIndex((file) => file.id === id);
-  // }
-
   async function downloadFilesZip() {
     const myZip = new JSZip();
-    const date = new Date();
     const downloadPromises = files.map(async (file) => {
       const content = await fetchFile({ file });
       myZip.file(`blank_cv_${findFileIndex(file.fileName) + 1}.pdf`, content);
@@ -68,6 +63,7 @@ export function DownloadButton() {
 
     try {
       await Promise.all(downloadPromises);
+      const date = new Date();
       const zipContent = await myZip.generateAsync({ type: "blob" });
       const formattedDate = `${date.getDate()}-${date.getMonth()}-${date.getFullYear()} at ${date.getHours()}.${date.getMinutes()}`;
       const zipFileName = `cvizard ${formattedDate}.zip`;

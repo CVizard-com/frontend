@@ -5,6 +5,12 @@ export function PdfUploaderBaner() {
   const { files, setFiles } = useContext(FilesContext);
   useEffect(() => {}, [files]);
 
+  const allFilesAlmostDone =
+    files.every((file) => file.status === "Almost done") && files.length > 0;
+
+  const allFilesDone =
+    files.every((file) => file.status === "Done") && files.length > 0;
+
   return (
     <div className="text-center">
       {/* <p className="text-lg font-medium leading-8 text-cyan-500">
@@ -15,7 +21,11 @@ export function PdfUploaderBaner() {
       </h1>
 
       <p className="text-lg text-xl leading-8 text-cyan-500 mb-8">
-        Drag and drop files or click the button below to add files
+        {allFilesAlmostDone
+          ? "We are processing your files, it make take few moments. Then it will download automatically."
+          : allFilesDone
+          ? "Process completed. Thank you for using CVizard"
+          : "Drag and drop files or click the button below to add files"}
       </p>
     </div>
   );

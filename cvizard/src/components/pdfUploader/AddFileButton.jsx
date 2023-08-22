@@ -37,7 +37,7 @@ export function AddFileButton() {
     });
   }
   const allFilesUploaded =
-    files.every((file) => file.status === "Uploaded") && files.length > 0;
+    files.every((file) => file.status !== "Pending") && files.length > 0;
   return (
     <>
       <button

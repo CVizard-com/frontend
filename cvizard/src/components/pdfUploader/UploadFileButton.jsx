@@ -16,6 +16,8 @@ axiosRetry(axios, {
 
 export function UploadFileButton() {
   const { files, setFiles } = useContext(FilesContext);
+  const allFilesPending =
+    files.every((file) => file.status !== "Pending") && files.length > 0;
 
   const updateFileStatus = (id, newStatus) => {
     setFiles((currentFiles) => {
@@ -51,17 +53,6 @@ export function UploadFileButton() {
   }
 
   async function uploadFiles() {
-    // //---------DELETE----------------
-    // files.forEach((file) => {
-    //   const json = {
-    //     id: file.id.toString(),
-    //     text: "Johnnie Ramos johnnie.ramos@gmail.com 708-678-627 Warsaw, Poland, Education 2015/10 – 2020/05 London, UK Languages Polish C2 A-Level Degree Abbey DLD College London Spanish B1 Certificates Certified Customer Service Professional (CCSP) 2016/10 Professional Experience 2020/01 – present 2019/08 – 2019/12 Projects 2022/01 – 2022/11 Skills Spring Boot Docker python IT Supervisor NextGen Information Research, identify and appraise emerging technologies, hardware, and software to provide strategic recommendations for continuous improvements IT Specialist INITAR Inc. Oversaw more than 200 computers of the company by monitoring, configuring, and maintaining all hardware and software systems",
-    //   };
-
-    //   axios.post("https://cvizard.com:8443/api/cleaner/test", json);
-    // });
-
-    // //-----------------
     const uploadPromises = files.map((file) => {
       if (file.status !== "Pending") return Promise.resolve();
       return uploadFile({ file });
@@ -77,7 +68,13 @@ export function UploadFileButton() {
   return (
     <button
       onClick={uploadFiles}
-      className="flex flex-wrap items-center justify-center w-36 h-10 mx-auto rounded-lg bg-cyan-500 py-2 text-white transition-colors hover:bg-cyan-600 my-2"
+      disabled={allFilesPending}
+      className={`flex flex-wrap items-center justify-center w-36 h-10 mx-auto rounded-lg text-white transition-colors py-2 my-2
+        ${
+          allFilesPending
+            ? "bg-gray-400 cursor-not-allowed"
+            : "bg-cyan-500 hover:bg-cyan-600"
+        }`}
     >
       <img src={uploadFileIcon} className="w-6 mx-1" />
       Upload files
