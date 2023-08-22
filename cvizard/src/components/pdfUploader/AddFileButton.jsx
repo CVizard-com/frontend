@@ -44,10 +44,7 @@ export function AddFileButton() {
         type="file"
         onClick={() => fileInputRef.current.click()}
         disabled={allFilesUploaded}
-        accept={
-          ("application/pdf",
-          "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
-        }
+        accept="application/pdf, application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         className={`flex flex-wrap items-center justify-center w-36 h-10 mx-auto rounded-lg text-white transition-colors py-2 my-2
         ${
           allFilesUploaded
@@ -60,7 +57,7 @@ export function AddFileButton() {
       </button>
       <input
         type="file"
-        accept="application/pdf"
+        accept="application/pdf, application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         ref={fileInputRef}
         style={{ display: "none" }}
         onChange={addFile}

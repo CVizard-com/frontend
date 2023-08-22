@@ -64,7 +64,8 @@ export function DraggableDropZone() {
     onDragLeave: onDragLeave,
     onDragEnd: onDragEnd,
     // onDragOver: onDragOver,
-    accept: { "application/pdf": [".pdf"], docx: [".docx"] },
+    accept:
+      "application/pdf, application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     type: file,
   });
   let style = {
