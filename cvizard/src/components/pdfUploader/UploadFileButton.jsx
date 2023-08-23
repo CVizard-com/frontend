@@ -33,7 +33,7 @@ export function UploadFileButton() {
         updateFileStatus(file.id, "Uploading");
 
         const formData = new FormData();
-        formData.append("pdf_file", file.file);
+        formData.append("file", file.file);
         formData.append("id", file.id);
 
         const response = await axios.post(
