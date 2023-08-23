@@ -26,7 +26,6 @@ export function DataForm() {
               <DataFormBaner />
               {  console.log(URL.createObjectURL(activeFile.file))}
               <Form file={activeFile} />
-              <DocxPreviewComponent file={activeFile} />
               <PdfPreviewComponent file={activeFile} />
               {/* </FetchingContext.Provider> */}
             </div>
