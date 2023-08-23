@@ -5,6 +5,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { Form } from "../components/dataForm/Form";
 import { FetchingContext, FilesContext } from "../App";
 import loading from "../images/loading.gif";
+import { DocxPreviewComponent } from "../components/dataForm/DocxPrevieComponent";
 // export const FetchingContext = createContext();
 
 export function DataForm() {
@@ -24,7 +25,9 @@ export function DataForm() {
             >
               {/* <FetchingContext.Provider value={{ fetchingData, setFetchingData }}> */}
               <DataFormBaner />
+              {  console.log(URL.createObjectURL(activeFile.file))}
               <Form file={activeFile} />
+              <DocxPreviewComponent file={activeFile} />
               <PdfPreviewComponent file={activeFile} />
               {/* </FetchingContext.Provider> */}
             </div>
