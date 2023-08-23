@@ -24,6 +24,7 @@ export function DataForm() {
             >
               {/* <FetchingContext.Provider value={{ fetchingData, setFetchingData }}> */}
               <DataFormBaner />
+              {  console.log(URL.createObjectURL(activeFile.file))}
               <Form file={activeFile} />
               <PdfPreviewComponent file={activeFile} />
               {/* </FetchingContext.Provider> */}
