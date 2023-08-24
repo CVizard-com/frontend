@@ -4,6 +4,10 @@ import { FilesContext } from "../../App";
 import axios from "axios";
 import axiosRetry from "axios-retry";
 import uploadFileIcon from "../../images/uploadFileIcon.png";
+
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 axiosRetry(axios, {
   retries: 5,
   retryDelay: (retryCount) => {
@@ -15,6 +19,19 @@ axiosRetry(axios, {
 });
 
 export function UploadFileButton() {
+  const notifyFilesUploading = () => {
+    toast.info("Files are uploading", {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+  };
+
   const { files, setFiles } = useContext(FilesContext);
   const allFilesPending =
     files.every((file) => file.status !== "Pending") && files.length > 0;
@@ -67,7 +84,10 @@ export function UploadFileButton() {
 
   return (
     <button
-      onClick={uploadFiles}
+      onClick={() => {
+        uploadFiles();
+        notifyFilesUploading();
+      }}
       disabled={allFilesPending}
       className={`flex flex-wrap items-center justify-center w-36 h-10 mx-auto rounded-lg text-white transition-colors py-2 my-2
         ${

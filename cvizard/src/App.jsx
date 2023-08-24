@@ -5,6 +5,8 @@ import { PdfUploader } from "./containers/PdfUploader";
 import { DataForm } from "./containers/DataForm";
 import { TemplateSelector } from "./containers/TemplateSelector";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const FilesContext = createContext();
 export const FetchingContext = createContext();
@@ -20,56 +22,6 @@ export default function App() {
     "Drag and drop files or click the button below to add files"
   );
 
-  // useEffect(() => {
-  //   localStorage.setItem("ITEMS", JSON.stringify(files));
-  // }, [files]);
-
-  function processFile({ file }) {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const response = await axios.get(
-          `https://cvizard.com:8443/api/maker/download?key=${file.id}`
-        );
-
-        if (response.status === 200) {
-          updateFileStatus(file.id, "Download");
-          resolve(file);
-        } else {
-          reject(new Error("File upload failed"));
-        }
-      } catch (error) {
-        reject(error);
-      }
-    });
-  }
-
-  function fetchFile({ file }) {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const response = await axios.get(
-          `https://cvizard.com:8443/api/maker/download?key=${file.id}`,
-          { responseType: "arraybuffer" }
-        );
-
-        if (response.status === 200) {
-          resolve(response.data);
-        } else {
-          reject(new Error("File download failed"));
-        }
-      } catch (error) {
-        reject(error);
-      }
-    });
-  }
-
-  function changeStatusAll(status) {
-    setFiles((currentFiles) => {
-      return currentFiles.map((file) => {
-        return { ...file, status };
-      });
-    });
-  }
-
   function toggleActive(id) {
     setFiles((currentFiles) => {
       return currentFiles.map((file) =>
@@ -80,6 +32,56 @@ export default function App() {
     });
   }
 
+  const notifyAllFilesUploaded = () => {
+    toast.success(
+      "Files uploaded. Please review and ensure the accuracy of any auto-detected personal data.",
+      {
+        position: "top-right",
+        autoClose: 5000,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+      }
+    );
+  };
+
+  const notifyAllFilesAreDone = () => {
+    toast.info(
+      "All personal data has been deleted. Choose template and download your CV",
+      {
+        position: "top-right",
+        autoClose: 5000,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+      }
+    );
+  };
+
+  const notifyFilesAreAlmostDone = () => {
+    toast.success("Files are processing, keep waiting", {
+      position: "top-right",
+      autoClose: 5000,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      theme: "light",
+    });
+  };
+
+  const notifyFilesDownloaded = () => {
+    toast.success("Files downloaded.", {
+      position: "top-right",
+      autoClose: 5000,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      theme: "light",
+    });
+  };
+
   const allFilesUploaded =
     files.every((file) => file.status === "Uploaded") && files.length > 0;
 
@@ -88,6 +90,12 @@ export default function App() {
 
   const someFilesAreUploaded =
     files.some((file) => file.status === "Uploaded") && files.length > 0;
+
+  const filesAreAlmostDone =
+    files.some((file) => file.status === "Almost done") && files.length > 0;
+
+  const filesDonwloaded =
+    files.every((file) => file.status === "Done") && files.length > 0;
 
   //TODO duplicate
   async function handleNextItem() {
@@ -141,6 +149,7 @@ export default function App() {
   }
   useEffect(() => {
     if (allFilesUploaded) {
+      notifyAllFilesUploaded();
       toggleActive(files[0].id);
 
       handleNextItem();
@@ -155,6 +164,7 @@ export default function App() {
 
   useEffect(() => {
     if (allFilesAreDone) {
+      notifyAllFilesAreDone();
       scroller.scrollTo("TemplateSelectorElement", {
         duration: 800,
         delay: 0,
@@ -163,21 +173,48 @@ export default function App() {
     }
   }, [allFilesAreDone]);
 
+  useEffect(() => {
+    if (filesAreAlmostDone) {
+      notifyFilesAreAlmostDone();
+    }
+  }, [filesAreAlmostDone]);
+
+  useEffect(() => {
+    if (filesDonwloaded) {
+      notifyFilesDownloaded();
+    }
+  }, [filesDonwloaded]);
+
   return (
-    <FetchingContext.Provider value={{ fetchingData, setFetchingData }}>
-      <FilesContext.Provider value={{ files, setFiles }}>
-        <PdfUploader allFilesUploaded={allFilesUploaded} />
-        {someFilesAreUploaded && (
-          <Element name="DataFormElement">
-            <DataForm />
-          </Element>
-        )}
-        {allFilesAreDone && (
-          <Element name="TemplateSelectorElement">
-            <TemplateSelector />
-          </Element>
-        )}
-      </FilesContext.Provider>
-    </FetchingContext.Provider>
+    <>
+      <ToastContainer
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
+      <FetchingContext.Provider value={{ fetchingData, setFetchingData }}>
+        <FilesContext.Provider value={{ files, setFiles }}>
+          <PdfUploader allFilesUploaded={allFilesUploaded} />
+
+          {someFilesAreUploaded && (
+            <Element name="DataFormElement">
+              <DataForm />
+            </Element>
+          )}
+          {allFilesAreDone && (
+            <Element name="TemplateSelectorElement">
+              <TemplateSelector />
+            </Element>
+          )}
+        </FilesContext.Provider>
+      </FetchingContext.Provider>
+    </>
   );
 }

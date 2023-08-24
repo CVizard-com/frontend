@@ -8,8 +8,7 @@ export function DataFormBaner() {
         Ensure private data is not shared
       </h1>
       <p className="text-lg text-xl leading-8 text-cyan-500 mb-8">
-        Verify if the personal data is correctlly detected and make some changes
-        if nessesary
+        Please review and ensure the accuracy of any auto-detected personal data
       </p>
     </div>
   );

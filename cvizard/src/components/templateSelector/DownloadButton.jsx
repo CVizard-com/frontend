@@ -6,6 +6,8 @@ import { saveAs } from "file-saver";
 import axiosRetry from "axios-retry";
 import downloadFile from "../../images/downloadFile.png";
 import { TemplateContext } from "../../containers/TemplateSelector";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 axiosRetry(axios, {
   retries: 5000,
@@ -30,6 +32,18 @@ export function DownloadButton() {
     });
   };
   //----------------------------------
+  const notifyTemplateError = () => {
+    toast.error("No template selected", {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+  };
   function fetchFile({ file }) {
     return new Promise(async (resolve, reject) => {
       try {
@@ -84,8 +98,12 @@ export function DownloadButton() {
     <>
       <button
         onClick={() => {
-          changeStatusAll("Almost done");
-          downloadFilesZip();
+          if (template === undefined) {
+            notifyTemplateError();
+          } else {
+            changeStatusAll("Almost done");
+            downloadFilesZip();
+          }
         }}
         className="flex flex-wrap items-center justify-center w-36 h-10 mx-auto rounded-lg bg-cyan-500 py-2 text-white transition-colors hover:bg-cyan-600 mt-12"
       >

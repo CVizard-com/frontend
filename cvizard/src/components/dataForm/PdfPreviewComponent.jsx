@@ -1,6 +1,7 @@
+import DocViewer from "react-doc-viewer";
+
 export function PdfPreviewComponent({ file }) {
   const isPdf = file && file.file.type === "application/pdf";
-  console.log(file.type);
   return (
     <>
       <div className="w-4/12 pb-8 px-8 h-5/6">
@@ -18,7 +19,7 @@ export function PdfPreviewComponent({ file }) {
           />
         ) : (
           <div className="flex items-center justify-center rounded-lg border-2 border-slate-300 h-[600px] w-full">
-            Preview not available
+            Preview is not available for .docx files, sorry
           </div>
         )}
       </div>

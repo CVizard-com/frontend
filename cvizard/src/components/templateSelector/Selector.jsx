@@ -6,7 +6,7 @@ export function Selector() {
 
   return (
     <>
-      <div className="flex items-center min-h-[60vh] rounded-lg border-2 border-slate-300 mx-24 overflow-x-auto">
+      <div className="flex items-center w-80 h-16 mx-auto my-12 rounded-lg border-2 border-slate-300">
         {templates.map((template) => (
           <Template
             key={template.id}
@@ -15,6 +15,15 @@ export function Selector() {
           />
         ))}
       </div>
+      {/* <div className="flex items-center min-h-[60vh] rounded-lg border-2 border-slate-300 mx-24 overflow-x-auto">
+        {templates.map((template) => (
+          <Template
+            key={template.id}
+            template={template}
+            label={template.label}
+          />
+        ))}
+      </div> */}
     </>
   );
 }
