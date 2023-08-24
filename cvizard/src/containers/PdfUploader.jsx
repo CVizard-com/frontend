@@ -24,7 +24,7 @@ export function PdfUploader({ allFilesUploaded }) {
   return (
     <>
       <DragContext.Provider value={{ isDragActive, setIsDragActive }}>
-        <DraggableDropZone />
+        {/* <DraggableDropZone /> */}
       </DragContext.Provider>
       <div
         className={`flex items-center justify-center min-h-screen w-full bg-white ${

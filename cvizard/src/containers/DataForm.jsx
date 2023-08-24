@@ -12,6 +12,7 @@ export function DataForm() {
   const { files, setFiles } = useContext(FilesContext);
   const activeFile = files.find((file) => file.isActive);
   const { fetchingData, setFetchingData } = useContext(FetchingContext);
+
   return (
     <>
       {activeFile && (
