@@ -5,7 +5,10 @@ import { useContext } from "react";
 import { saveAs } from "file-saver";
 import axiosRetry from "axios-retry";
 import downloadFile from "../../images/downloadFile.png";
-import { TemplateContext } from "../../containers/TemplateSelector";
+import {
+  TemplateContext,
+  FormatContext,
+} from "../../containers/TemplateSelector";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -21,8 +24,10 @@ axiosRetry(axios, {
 
 export function DownloadButton() {
   const { templates, setTemplates } = useContext(TemplateContext);
+  const { formats, setFormats } = useContext(FormatContext);
   const { files, setFiles } = useContext(FilesContext);
   const template = templates.find((template) => template.isActive);
+  const format = formats.find((format) => format.isActive);
   //-----------------DELETE----------------- duplicate
   const updateFileStatus = (id, newStatus) => {
     setFiles((currentFiles) => {
@@ -48,7 +53,7 @@ export function DownloadButton() {
     return new Promise(async (resolve, reject) => {
       try {
         const response = await axios.get(
-          `https://cvizard.com:8443/api/maker/download/${template.label}?key=${file.id}`,
+          `https://cvizard.com:8443/api/maker/download?key=${file.id}&template=${template.label}&format=${format.label}`,
           { responseType: "arraybuffer" }
         );
 
@@ -72,7 +77,10 @@ export function DownloadButton() {
     const myZip = new JSZip();
     const downloadPromises = files.map(async (file) => {
       const content = await fetchFile({ file });
-      myZip.file(`blank_cv_${findFileIndex(file.fileName) + 1}.pdf`, content);
+      myZip.file(
+        `blank_cv_${findFileIndex(file.fileName) + 1}.${format.label}`,
+        content
+      );
     });
 
     try {
@@ -105,7 +113,7 @@ export function DownloadButton() {
             downloadFilesZip();
           }
         }}
-        className="flex flex-wrap items-center justify-center w-36 h-10 mx-auto rounded-lg bg-cyan-500 py-2 text-white transition-colors hover:bg-cyan-600 mt-12"
+        className="flex flex-wrap items-center justify-center w-40 h-10 mx-auto rounded-lg bg-cyan-500 py-2 text-white transition-colors hover:bg-cyan-600 mt-8"
       >
         <img src={downloadFile} className="w-6 mx-1" />
         Download files
