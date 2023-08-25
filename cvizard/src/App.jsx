@@ -18,9 +18,6 @@ export default function App() {
     return JSON.parse(localValue);
   });
   const [fetchingData, setFetchingData] = useState(true); //TODO wyjebac do dataForm
-  const [siteStatus, setSiteStatus] = useState(
-    "Drag and drop files or click the button below to add files"
-  );
 
   function toggleActive(id) {
     setFiles((currentFiles) => {
@@ -147,6 +144,7 @@ export default function App() {
       });
     }
   }
+
   useEffect(() => {
     if (allFilesUploaded) {
       notifyAllFilesUploaded();
