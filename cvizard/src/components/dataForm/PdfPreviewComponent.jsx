@@ -35,7 +35,7 @@ export function PdfPreviewComponent({ file }) {
           }
         );
         if (response.status === 200) {
-          const blob = new File([response.data], {
+          const blob = new Blob([response.data], {
             type: "application/pdf",
           });
           setPdf({ ...file, file: blob });
