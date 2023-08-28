@@ -9,8 +9,8 @@ export function Template({ template }) {
     setTemplates((currentTemplates) => {
       return currentTemplates.map((template) =>
         template.id === id
-          ? { ...template, isActive: true }
-          : { ...template, isActive: false }
+          ? { ...template, isActive: !template.isActive }
+          : { ...template, isActive: template.isActive }
       );
     });
   }
