@@ -9,7 +9,7 @@ export function Format({ format }) {
     setFormats((currentFormats) => {
       return currentFormats.map((format) =>
         format.id === id
-          ? { ...format, isActive: !format.isActive }
+          ? { ...format, isActive: true }
           : { ...format, isActive: false }
       );
     });
