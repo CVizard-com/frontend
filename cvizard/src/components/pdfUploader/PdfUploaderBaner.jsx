@@ -6,7 +6,7 @@ export function PdfUploaderBaner() {
   useEffect(() => {}, [files]);
 
   const allFilesAlmostDone =
-    files.every((file) => file.status === "Almost done") && files.length > 0;
+    files.some((file) => file.status === "Almost done") && files.length > 0;
 
   const allFilesDone =
     files.every((file) => file.status === "Done") && files.length > 0;
@@ -20,7 +20,7 @@ export function PdfUploaderBaner() {
         Anonymize and convert <u>any</u> CV
       </h1>
 
-      <p className="text-lg text-xl leading-8 text-cyan-500 mb-8">
+      <p className="text-xl leading-8 text-cyan-500 mb-8">
         {allFilesAlmostDone
           ? "We are processing your files, it make take few moments. Then it will download automatically."
           : allFilesDone
