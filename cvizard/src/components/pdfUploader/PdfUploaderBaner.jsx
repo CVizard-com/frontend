@@ -7,6 +7,7 @@ export function PdfUploaderBaner() {
 
   const allFilesAlmostDone =
     files.some((file) => file.status === "Almost done") && files.length > 0;
+  
 
   const allFilesDone =
     files.every((file) => file.status === "Done") && files.length > 0;
