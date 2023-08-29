@@ -23,7 +23,7 @@ export function PdfUploaderBaner() {
 
       <p className="text-xl leading-8 text-cyan-500 mb-8">
         {allFilesAlmostDone
-          ? "We are processing your files, it make take few moments. Then it will download automatically."
+          ? "We are processing your files, it may take few moments. Then it will download automatically."
           : allFilesDone
           ? "Process completed. Thank you for using CVizard"
           : "Drag and drop files or click the button below to add files"}
